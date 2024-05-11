@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import com.thinkbigdata.anna.topic.TopicName;
 @Entity
-@Table(name = "Topic")
+@Table(name = "Topics")
 @Getter @Setter
 public class Topic {
     @Id @Column(name = "Topic_id") @GeneratedValue(strategy = GenerationType.AUTO)
