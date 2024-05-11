@@ -10,8 +10,8 @@ import lombok.Setter;
 public class Sentence {
     @Id @Column(name = "Sentence_id") @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-    @Column(name = "Topic_id")
-    private Integer topic;
+    @JoinColumn(name = "Topic_id", nullable = false) @OneToOne(fetch = FetchType.LAZY)
+    private Topic topic;
     @Column(name = "Sentence_eng", nullable = false)
     private String eng;
     @Column(name = "Sentence_kor", nullable = false)
