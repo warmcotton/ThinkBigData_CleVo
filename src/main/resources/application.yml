@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: ANNA
+  config:
+    import:
+      - classpath:/yaml/application-dev.yml
+      - classpath:/yaml/application-test.yml
+  profiles:
+    active: dev
