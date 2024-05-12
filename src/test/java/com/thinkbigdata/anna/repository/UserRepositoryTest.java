@@ -2,7 +2,9 @@ package com.thinkbigdata.anna.repository;
 
 import com.thinkbigdata.anna.entity.Topic;
 import com.thinkbigdata.anna.entity.User;
+import com.thinkbigdata.anna.entity.UserImage;
 import com.thinkbigdata.anna.entity.UserTopic;
+import com.thinkbigdata.anna.role.Role;
 import com.thinkbigdata.anna.topic.TopicName;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,6 +18,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,6 +35,8 @@ public class UserRepositoryTest {
     TopicRepository topicRepository;
     @Autowired
     UserTopicRepository userTopicRepository;
+    @Autowired
+    UserImageRepository userImageRepository;
     @Autowired
     TestEntityManager testEntityManager;
     void saveTopics() {
@@ -53,6 +58,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
 
@@ -73,6 +79,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
 
@@ -84,6 +91,7 @@ public class UserRepositoryTest {
         newuser.setPassword("1111");
         newuser.setName("Name");
         newuser.setNickname("NickName");
+        newuser.setRole(Role.User);
         newuser.setAge(20);
         newuser.setGender("M");
 
@@ -100,6 +108,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
 
@@ -124,5 +133,30 @@ public class UserRepositoryTest {
         List<UserTopic> savedUserTopics = userTopicRepository.findByUser(savedUser);
 
         assertArrayEquals(savedUserTopics.toArray(), userTopics.toArray());
+    }
+
+    @Test
+    void save_with_default_image() {
+        User user = new User();
+        user.setEmail("test@test.com");
+        user.setPassword("1111");
+        user.setName("Name");
+        user.setNickname("NickName");
+        user.setRole(Role.User);
+        user.setAge(20);
+        user.setGender("M");
+        User savedUser = userRepository.save(user);
+        testEntityManager.flush();
+
+        UserImage userImage = new UserImage();
+        userImage.setUser(savedUser);
+        userImageRepository.save(userImage);
+        testEntityManager.flush();
+
+        Optional<UserImage> dfImage = userImageRepository.findByUser(savedUser);
+        UserImage savedImage = testEntityManager.refresh(dfImage.get());
+        System.out.println(savedImage.getUser().getEmail());
+        System.out.println(savedImage.getId());
+        System.out.println(savedImage.getOriginName());
     }
 }
