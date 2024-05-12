@@ -1,6 +1,7 @@
 package com.thinkbigdata.anna.repository;
 
 import com.thinkbigdata.anna.entity.*;
+import com.thinkbigdata.anna.role.Role;
 import com.thinkbigdata.anna.topic.TopicName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,7 @@ class LearningLogRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
         userRepository.save(user);

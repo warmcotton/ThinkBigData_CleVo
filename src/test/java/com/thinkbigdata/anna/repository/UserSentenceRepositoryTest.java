@@ -1,6 +1,7 @@
 package com.thinkbigdata.anna.repository;
 
 import com.thinkbigdata.anna.entity.*;
+import com.thinkbigdata.anna.role.Role;
 import com.thinkbigdata.anna.topic.TopicName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ import java.sql.Timestamp;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 @SpringBootTest
 @AutoConfigureTestEntityManager
 @ActiveProfiles("test")
@@ -40,6 +42,7 @@ class UserSentenceRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
         userRepository.save(user);

@@ -3,6 +3,7 @@ package com.thinkbigdata.anna.repository;
 import com.thinkbigdata.anna.entity.Topic;
 import com.thinkbigdata.anna.entity.User;
 import com.thinkbigdata.anna.entity.UserTopic;
+import com.thinkbigdata.anna.role.Role;
 import com.thinkbigdata.anna.topic.TopicName;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
@@ -53,6 +54,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
 
@@ -73,6 +75,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
 
@@ -84,6 +87,7 @@ public class UserRepositoryTest {
         newuser.setPassword("1111");
         newuser.setName("Name");
         newuser.setNickname("NickName");
+        newuser.setRole(Role.User);
         newuser.setAge(20);
         newuser.setGender("M");
 
@@ -100,6 +104,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
+        user.setRole(Role.User);
         user.setAge(20);
         user.setGender("M");
 

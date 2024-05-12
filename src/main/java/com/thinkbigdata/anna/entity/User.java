@@ -1,5 +1,6 @@
 package com.thinkbigdata.anna.entity;
 
+import com.thinkbigdata.anna.role.Role;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -24,6 +25,8 @@ public class User {
     private String name;
     @Column(name = "User_nickname", nullable = false)
     private String nickname;
+    @Enumerated(value = EnumType.STRING) @Column(name = "User_role", nullable = false)
+    private Role role;
     @Column(name = "User_age", nullable = false)
     private Integer age;
     @Column(name = "User_gender", nullable = false)
