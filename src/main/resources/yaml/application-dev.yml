@@ -11,10 +11,6 @@ spring:
     console:
       enabled: true
       path: /h2-console
-  security:
-    user:
-      name: user
-      password: 1111
   jpa:
     hibernate:
       ddl-auto: create
@@ -23,10 +19,15 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         show_sql: true
         format_sql: true
+  devtools:
+    restart:
+      enabled: true
 
 logging:
   level:
     org:
+      springframework:
+        security: trace
       hibernate:
         type:
           descriptor:
@@ -45,3 +46,5 @@ management:
         include:
           - info
           - health
+
+img.location: D:/ANNA/user/images
