@@ -1,6 +1,6 @@
 spring:
   application:
-    name: ANNA
+    name: CleVo
   config:
     import:
       - classpath:/yaml/application-dev.yml

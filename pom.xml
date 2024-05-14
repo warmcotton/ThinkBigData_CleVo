@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.ThinkBigData</groupId>
-	<artifactId>ANNA</artifactId>
+	<artifactId>CleVo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ANNA</name>
-	<description>ANNA</description>
+	<name>CleVo</name>
+	<description>CleVo</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
