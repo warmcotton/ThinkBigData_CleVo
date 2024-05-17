@@ -42,7 +42,7 @@ class UserSentenceRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
-        user.setRole(Role.User);
+        user.setRole(Role.USER);
         user.setAge(20);
         user.setGender("M");
         userRepository.save(user);

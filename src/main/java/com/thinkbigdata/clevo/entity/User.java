@@ -51,6 +51,6 @@ public class User {
         this.gender = gender;
         this.level = level;
         this.target = target;
-        this.role = Role.User;
+        this.role = Role.USER;
     }
 }

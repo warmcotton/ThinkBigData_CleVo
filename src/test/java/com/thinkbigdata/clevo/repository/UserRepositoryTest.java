@@ -58,7 +58,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
-        user.setRole(Role.User);
+        user.setRole(Role.USER);
         user.setAge(20);
         user.setGender("M");
 
@@ -79,7 +79,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
-        user.setRole(Role.User);
+        user.setRole(Role.USER);
         user.setAge(20);
         user.setGender("M");
 
@@ -91,7 +91,7 @@ public class UserRepositoryTest {
         newuser.setPassword("1111");
         newuser.setName("Name");
         newuser.setNickname("NickName");
-        newuser.setRole(Role.User);
+        newuser.setRole(Role.USER);
         newuser.setAge(20);
         newuser.setGender("M");
 
@@ -108,7 +108,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
-        user.setRole(Role.User);
+        user.setRole(Role.USER);
         user.setAge(20);
         user.setGender("M");
 
@@ -142,7 +142,7 @@ public class UserRepositoryTest {
         user.setPassword("1111");
         user.setName("Name");
         user.setNickname("NickName");
-        user.setRole(Role.User);
+        user.setRole(Role.USER);
         user.setAge(20);
         user.setGender("M");
         User savedUser = userRepository.save(user);
