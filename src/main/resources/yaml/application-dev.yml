@@ -22,7 +22,14 @@ spring:
   devtools:
     restart:
       enabled: true
-
+  data:
+    redis:
+      host: localhost
+      port: 6379
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 logging:
   level:
     org:
@@ -48,3 +55,6 @@ management:
           - health
 
 img.location: D:/clevo/user/images
+token.access: 3600000 # 1000 * 60 * 60
+token.refresh: 1209600000 # 1000 * 60 * 60 * 24 * 14
+jwt.secret: vU10XArK82GV3MykKWIGR2r7fhchWttVLT9ioG4AIpU=
