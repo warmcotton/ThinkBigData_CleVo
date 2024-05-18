@@ -17,6 +17,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,7 +60,7 @@ public class UserRepositoryTest {
         user.setName("Name");
         user.setNickname("NickName");
         user.setRole(Role.USER);
-        user.setAge(20);
+        user.setBirth(LocalDate.now());
         user.setGender("M");
 
         User savedUser = userRepository.save(user);
@@ -80,7 +81,7 @@ public class UserRepositoryTest {
         user.setName("Name");
         user.setNickname("NickName");
         user.setRole(Role.USER);
-        user.setAge(20);
+        user.setBirth(LocalDate.now());
         user.setGender("M");
 
         userRepository.save(user);
@@ -92,7 +93,7 @@ public class UserRepositoryTest {
         newuser.setName("Name");
         newuser.setNickname("NickName");
         newuser.setRole(Role.USER);
-        newuser.setAge(20);
+        user.setBirth(LocalDate.now());
         newuser.setGender("M");
 
         userRepository.save(newuser);
@@ -109,7 +110,7 @@ public class UserRepositoryTest {
         user.setName("Name");
         user.setNickname("NickName");
         user.setRole(Role.USER);
-        user.setAge(20);
+        user.setBirth(LocalDate.now());
         user.setGender("M");
 
         User savedUser = userRepository.save(user);
@@ -143,7 +144,7 @@ public class UserRepositoryTest {
         user.setName("Name");
         user.setNickname("NickName");
         user.setRole(Role.USER);
-        user.setAge(20);
+        user.setBirth(LocalDate.now());
         user.setGender("M");
         User savedUser = userRepository.save(user);
         testEntityManager.flush();

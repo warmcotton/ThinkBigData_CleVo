@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(authorize ->
-                authorize.requestMatchers("/actuator/**","/h2-console/**", "/registration", "/login",
+                authorize.requestMatchers("/actuator/**","/h2-console/**", "/signup/user", "/signup/info", "/login",
                             "/refresh/token", "/error").permitAll()
                             .requestMatchers("/admin/**").hasAuthority("ADMIN")
                             .anyRequest().authenticated())

@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,7 +43,7 @@ class LearningLogRepositoryTest {
         user.setName("Name");
         user.setNickname("NickName");
         user.setRole(Role.USER);
-        user.setAge(20);
+        user.setBirth(LocalDate.now());
         user.setGender("M");
         userRepository.save(user);
         testEntityManager.flush();

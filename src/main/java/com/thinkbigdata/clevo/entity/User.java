@@ -10,6 +10,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -25,12 +26,12 @@ public class User {
     private String password;
     @Column(name = "User_name", nullable = false)
     private String name;
-    @Column(name = "User_nickname")
+    @Column(name = "User_nickname", nullable = false)
     private String nickname;
     @Enumerated(value = EnumType.STRING) @Column(name = "User_role", nullable = false)
     private Role role;
-    @Column(name = "User_age", nullable = false)
-    private Integer age;
+    @Column(name = "User_birth", nullable = false)
+    private LocalDate birth;
     @Column(name = "User_gender", nullable = false)
     private String gender;
     @Column(name = "User_level")
@@ -43,14 +44,12 @@ public class User {
     private LocalDateTime last;
 
     @Builder
-    public User(String email, String name, String nickname, Integer age, String gender, Integer level, Integer target) {
+    public User(String email, String name, String nickname, LocalDate birth, String gender) {
         this.email = email;
         this.name = name;
         this.nickname = nickname;
-        this.age = age;
+        this.birth = birth;
         this.gender = gender;
-        this.level = level;
-        this.target = target;
         this.role = Role.USER;
     }
 }
