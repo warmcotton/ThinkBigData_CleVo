@@ -7,13 +7,16 @@ import com.thinkbigdata.clevo.dto.UserRegistrationDto;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
 import com.thinkbigdata.clevo.topic.TopicName;
+import com.thinkbigdata.clevo.util.email.EmailSender;
 import com.thinkbigdata.clevo.util.token.TokenGenerateValidator;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Key;
+import java.security.SecureRandom;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -40,6 +44,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final TokenGenerateValidator tokenGenerateValidator;
     private final RedisTemplate<String, String> redisTemplate;
+    private final EmailSender emailSender;
     @Value("${img.location}") private String imgLocation;
     @Value("${jwt.secret}") private String secret;
     @Value("${token.access}") private Long accessExpired;
@@ -151,7 +156,7 @@ public class UserService {
     //Generate Access, Refresh Token
     public TokenDto login(String email, String password) {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("이메일 확인"));
+                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword()))
             throw new RuntimeException("패스워드 확인");
@@ -244,5 +249,42 @@ public class UserService {
         savedImage.setPath(newImage.getPath());
 
         return getUserDto(user, topicNames, savedImage);
+    }
+
+    public void findPassword(String email, String name, String birth) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
+
+        if (!user.getName().equals(name)) throw new BadCredentialsException("가입된 이름과 일치하지 않습니다.");
+        if (!user.getBirth().toString().equals(birth)) throw new BadCredentialsException("가입된 생년월일과 일치하지 않습니다.");
+
+        String password = generatePassword();
+        user.setPassword(passwordEncoder.encode(password));
+
+        try {
+            emailSender.sendMail(email, name, password);
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private String generatePassword() {
+        String upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        String lower = "abcdefghijklmnopqrstuvwxyz";
+        String num = "012345789";
+        String sp = "!@#$%&*?";
+
+        StringBuffer sb = new StringBuffer();
+        SecureRandom sr = new SecureRandom();
+
+        sb.append(upper.charAt(sr.nextInt(upper.length())));
+        for(int i=0; i<3; i++) {
+            sb.append(lower.charAt(sr.nextInt(lower.length())));
+        }
+        for(int i=0; i<4; i++) {
+            sb.append(num.charAt(sr.nextInt(num.length())));
+        }
+        sb.append(sp.charAt(sr.nextInt(sp.length())));
+        return sb.toString();
     }
 }

@@ -77,6 +77,15 @@ public class UserController {
         return ResponseEntity.status(200).build();
     }
 
+    @PostMapping("/find/password")
+    public ResponseEntity<?> findPassword(@RequestBody Map<String, String> check) {
+        if (!check.containsKey("email") || !check.containsKey("name") || !check.containsKey("birth"))
+            throw new RuntimeException("bad request");
+
+        userService.findPassword(check.get("email"), check.get("name"), check.get("birth"));
+        return ResponseEntity.ok(null);
+    }
+
     @PostMapping("/refresh/token")
     public ResponseEntity<TokenDto> refreshToken(@RequestBody Map<String, String> token) {
         if (!token.containsKey("refresh"))
