@@ -14,6 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ class UserSentenceRepositoryTest {
         user.setName("Name");
         user.setNickname("NickName");
         user.setRole(Role.USER);
-        user.setAge(20);
+        user.setBirth(LocalDate.now());
         user.setGender("M");
         userRepository.save(user);
         testEntityManager.flush();

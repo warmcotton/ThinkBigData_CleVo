@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 @Component
@@ -27,7 +28,7 @@ public class BootstrapCommanderLinerRunner implements CommandLineRunner {
         Topic topic2 = new Topic();
         Topic topic3 = new Topic();
         User admin = User.builder().email("admin@admin.com").name("admin").nickname("admin")
-                .age(20).gender("M").level(10).target(5)
+                .birth(LocalDate.now()).gender("M")
                 .build();
         admin.setPassword(passwordEncoder.encode("Admin1111!"));
         admin.setRole(Role.ADMIN);

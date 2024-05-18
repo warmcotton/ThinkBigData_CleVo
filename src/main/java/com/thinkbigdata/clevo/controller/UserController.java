@@ -2,10 +2,12 @@ package com.thinkbigdata.clevo.controller;
 
 import com.thinkbigdata.clevo.dto.TokenDto;
 import com.thinkbigdata.clevo.dto.UserDto;
+import com.thinkbigdata.clevo.dto.UserInfoDto;
 import com.thinkbigdata.clevo.dto.UserRegistrationDto;
 import com.thinkbigdata.clevo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.util.StringUtils;
@@ -13,15 +15,39 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
 
-    @PostMapping ("/registration")
-    public ResponseEntity<UserDto> register(@RequestPart MultipartFile userImage, @RequestPart @Valid UserRegistrationDto registerDto) {
-        UserDto userDto = userService.registerUser(registerDto, userImage);
+    @PostMapping ("/signup/user")
+    public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserRegistrationDto registerDto) {
+        String sessionId = UUID.randomUUID().toString();
+        UserDto userDto = userService.registerUser(registerDto, sessionId);
+
+        HttpHeaders responseHeaders = new HttpHeaders();
+        responseHeaders.set("sessionId", sessionId);
+
+        return new ResponseEntity<>(userDto, responseHeaders, 200);
+    }
+
+    @PostMapping ("/signup/info")
+    public ResponseEntity<UserDto> addUserInfo(@RequestHeader("sessionId") String sessionId, @RequestBody @Valid UserInfoDto userInfoDto) {
+        UserDto userDto = userService.addUserInfo(userInfoDto, sessionId);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @GetMapping("/user")
+    public ResponseEntity<UserDto> getUser(Authentication authentication) {
+        UserDto userDto = userService.getUser(authentication.getName());
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PutMapping("/user")
+    public ResponseEntity<UserDto> updateUser(Authentication authentication, @RequestPart @Valid UserDto updateDto, @RequestPart MultipartFile userImage) {
+        UserDto userDto = userService.updateUser(authentication.getName(), updateDto, userImage);
         return ResponseEntity.ok(userDto);
     }
 

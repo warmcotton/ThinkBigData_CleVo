@@ -1,11 +1,11 @@
 package com.thinkbigdata.clevo.dto;
 
-import com.thinkbigdata.clevo.topic.TopicName;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.time.LocalDate;
+
 @Getter @Setter
 public class UserRegistrationDto {
     @NotBlank(message = "이메일은 필수 입력값 입니다.")
@@ -20,15 +20,9 @@ public class UserRegistrationDto {
     private String name;
     @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "특수문자를 제외한 2~10자리 닉네임")
     private String nickName;
-    @NotNull(message = "나이는 필수로 입력해야 합니다.")
-    private Integer age;
+    @NotNull(message = "생년월일은 필수로 입력해야 합니다.")
+    private LocalDate birth;
     @NotBlank(message = "성별은 필수로 입력해야 합니다.")
     @Pattern(regexp = "^[MF]$")
     private String gender;
-    @Min(value = 1) @Max(value = 10)
-    private Integer level;
-    @Min(value = 1) @Max(value = 10)
-    private Integer target;
-    @Size(max = 5)
-    private List<TopicName> topic;
 }

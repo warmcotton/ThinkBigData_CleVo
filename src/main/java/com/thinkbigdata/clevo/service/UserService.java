@@ -2,6 +2,7 @@ package com.thinkbigdata.clevo.service;
 
 import com.thinkbigdata.clevo.dto.TokenDto;
 import com.thinkbigdata.clevo.dto.UserDto;
+import com.thinkbigdata.clevo.dto.UserInfoDto;
 import com.thinkbigdata.clevo.dto.UserRegistrationDto;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
@@ -45,6 +46,8 @@ public class UserService {
     @Value("${token.refresh}") private Long refreshExpired;
     private byte[] bytes;
     private Key key;
+    private static final String PROFILE_DEFAULT_IMAGE = "default-profile.jpg";
+
 
     @PostConstruct
     private void init() {
@@ -52,38 +55,52 @@ public class UserService {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public UserDto registerUser(UserRegistrationDto registerDto, MultipartFile imageFile) {
+    public UserDto registerUser(UserRegistrationDto registerDto, String sessionId) {
         User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickName())
-                .age(registerDto.getAge()).gender(registerDto.getGender()).level(registerDto.getLevel()).target(registerDto.getTarget())
+                .birth(registerDto.getBirth()).gender(registerDto.getGender())
                 .build();
         user.setPassword(passwordEncoder.encode(registerDto.getPassword1()));
         User savedUser = userRepository.save(user);
 
+        UserImage userImage = saveDefaultImage();
+        userImage.setUser(savedUser);
+        UserImage savedUserImage = userImageRepository.save(userImage);
+
+        redisTemplate.opsForValue().set("sessionId:"+sessionId, user.getEmail(), 300000L, TimeUnit.MILLISECONDS);
+        return getUserDto(savedUser, savedUserImage);
+    }
+
+    public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) {
+        String email = "";
+        if (redisTemplate.opsForValue().get("sessionId:"+sessionId) == null) {
+            throw new RuntimeException("세션 정보 불일치");
+        }
+        email = redisTemplate.opsForValue().get("sessionId:"+sessionId);
+        User user = userRepository.findByEmail(email).get();
+
+        user.setLevel(userInfoDto.getLevel());
+        user.setTarget(userInfoDto.getTarget());
+
         List<UserTopic> userTopics = new ArrayList<>();
-        for (TopicName topic : registerDto.getTopic()) {
+        for (TopicName topic : userInfoDto.getTopic()) {
             Topic T = topicRepository.findByTopicName(topic).get();
             UserTopic userTopic = new UserTopic();
             userTopic.setTopic(T);
-            userTopic.setUser(savedUser);
+            userTopic.setUser(user);
             userTopics.add(userTopic);
         }
 
         if (userTopics.size()!=0) {
             userTopics = userTopicRepository.saveAll(userTopics);
         }
-        
+
         List<TopicName> topicNames = new ArrayList<>();
         for (UserTopic userTopic: userTopics) {
             topicNames.add(userTopic.getTopic().getTopicName());
         }
+        UserImage userImage = userImageRepository.findByUser(user).get();
 
-        UserImage userImage = saveImage(imageFile);
-        userImage.setUser(savedUser);
-        UserImage savedUserImage = userImageRepository.save(userImage);
-
-        return UserDto.builder().email(savedUser.getEmail()).name(savedUser.getName()).nickName(savedUser.getNickname()).age(savedUser.getAge())
-                .gender(savedUser.getGender()).level(savedUser.getLevel()).target(savedUser.getTarget()).role(savedUser.getRole())
-                .imgPath(savedUserImage.getPath()).createdDate(savedUser.getDate()).lastLoginDate(savedUser.getLast()).topic(topicNames).build();
+        return getUserDto(user, topicNames, userImage);
     }
 
     private UserImage saveImage(MultipartFile imageFile) {
@@ -105,6 +122,30 @@ public class UserService {
         userImage.setOriginName(originName);
         userImage.setPath(path);
         return userImage;
+    }
+
+    private UserImage saveDefaultImage() {
+        String originName = PROFILE_DEFAULT_IMAGE;
+        String savedFileName = PROFILE_DEFAULT_IMAGE;
+        String path = "/images/clevo/"+ PROFILE_DEFAULT_IMAGE;
+
+        UserImage userImage = new UserImage();
+        userImage.setName(savedFileName);
+        userImage.setOriginName(originName);
+        userImage.setPath(path);
+        return userImage;
+    }
+
+    private UserDto getUserDto(User user, UserImage image) {
+        return UserDto.builder().email(user.getEmail()).name(user.getName()).nickName(user.getNickname()).birth(user.getBirth())
+                .gender(user.getGender()).level(user.getLevel()).target(user.getTarget()).role(user.getRole()).imgPath(image.getPath())
+                .createdDate(user.getDate()).lastLoginDate(user.getLast()).build();
+    }
+
+    private UserDto getUserDto(User user, List<TopicName> topicList, UserImage image) {
+        return UserDto.builder().email(user.getEmail()).name(user.getName()).nickName(user.getNickname()).birth(user.getBirth())
+                .gender(user.getGender()).level(user.getLevel()).target(user.getTarget()).role(user.getRole()).imgPath(image.getPath())
+                .topic(topicList).createdDate(user.getDate()).lastLoginDate(user.getLast()).build();
     }
 
     //Generate Access, Refresh Token
@@ -154,5 +195,54 @@ public class UserService {
         refreshToken.setExpiredDate(new Timestamp(expiration.getTime()).toLocalDateTime());
         refreshToken.setValue(token.getRefresh());
         return token;
+    }
+
+    public UserDto getUser(String email) {
+        User user = userRepository.findByEmail(email).get();
+        List<UserTopic> topic = userTopicRepository.findByUser(user);
+        List<TopicName> topicNames = new ArrayList<>();
+        for (UserTopic userTopic: topic) {
+            topicNames.add(userTopic.getTopic().getTopicName());
+        }
+        UserImage userImage = userImageRepository.findByUser(user).get();
+
+        return getUserDto(user, topicNames, userImage);
+    }
+
+    public UserDto updateUser(String loginAccountEmail, UserDto updateDto, MultipartFile userImage) {
+        if (!loginAccountEmail.equals(updateDto.getEmail())) throw new RuntimeException("유저 정보 불일치");
+
+        User user = userRepository.findByEmail(updateDto.getEmail()).get();
+        user.setNickname(updateDto.getNickName());
+        user.setLevel(updateDto.getLevel());
+        user.setTarget(updateDto.getTarget());
+
+        List<UserTopic> topics = userTopicRepository.findByUser(user);
+        userTopicRepository.deleteAll(topics);
+
+        List<UserTopic> userTopics = new ArrayList<>();
+        for (TopicName topic : updateDto.getTopic()) {
+            Topic T = topicRepository.findByTopicName(topic).get();
+            UserTopic userTopic = new UserTopic();
+            userTopic.setTopic(T);
+            userTopic.setUser(user);
+            userTopics.add(userTopic);
+        }
+        if (userTopics.size()!=0) {
+            userTopics = userTopicRepository.saveAll(userTopics);
+        }
+
+        List<TopicName> topicNames = new ArrayList<>();
+        for (UserTopic userTopic: userTopics) {
+            topicNames.add(userTopic.getTopic().getTopicName());
+        }
+
+        UserImage savedImage = userImageRepository.findByUser(user).get();
+        UserImage newImage = saveImage(userImage);
+        savedImage.setName(newImage.getName());
+        savedImage.setOriginName(newImage.getOriginName());
+        savedImage.setPath(newImage.getPath());
+
+        return getUserDto(user, topicNames, savedImage);
     }
 }
