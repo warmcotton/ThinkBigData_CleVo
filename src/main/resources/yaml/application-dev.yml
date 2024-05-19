@@ -16,6 +16,10 @@ spring:
         dialect: org.hibernate.dialect.H2Dialect
         show_sql: true
         format_sql: true
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
   devtools:
     restart:
       enabled: true
@@ -27,6 +31,7 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+
 logging:
   level:
     org:
