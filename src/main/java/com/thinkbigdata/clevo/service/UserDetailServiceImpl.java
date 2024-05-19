@@ -16,7 +16,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) {
         User user = userRepository.findByEmail(username).orElseThrow(() ->
-            new UsernameNotFoundException("이메일 확인")
+            new UsernameNotFoundException("가입된 이메일 정보가 없습니다.")
         );
 
         return new CleVoUserDetail(user.getEmail(), user.getRole());

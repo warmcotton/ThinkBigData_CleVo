@@ -1,9 +1,7 @@
 package com.thinkbigdata.clevo.service;
 
-import com.thinkbigdata.clevo.dto.TokenDto;
-import com.thinkbigdata.clevo.dto.UserDto;
-import com.thinkbigdata.clevo.dto.UserInfoDto;
-import com.thinkbigdata.clevo.dto.UserRegistrationDto;
+import com.thinkbigdata.clevo.dto.*;
+import com.thinkbigdata.clevo.dto.user.*;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
 import com.thinkbigdata.clevo.topic.TopicName;
@@ -23,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.Key;
@@ -61,6 +60,9 @@ public class UserService {
     }
 
     public UserDto registerUser(UserRegistrationDto registerDto, String sessionId) {
+        if (!registerDto.getPassword2().equals(registerDto.getPassword1()))
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+
         User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickName())
                 .birth(registerDto.getBirth()).gender(registerDto.getGender())
                 .build();
@@ -76,15 +78,18 @@ public class UserService {
     }
 
     public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) {
-        String email = "";
         if (redisTemplate.opsForValue().get("sessionId:"+sessionId) == null) {
             throw new RuntimeException("세션 정보 불일치");
         }
-        email = redisTemplate.opsForValue().get("sessionId:"+sessionId);
+        String email = redisTemplate.opsForValue().get("sessionId:"+sessionId);
         User user = userRepository.findByEmail(email).get();
 
         user.setLevel(userInfoDto.getLevel());
         user.setTarget(userInfoDto.getTarget());
+
+        List<UserTopic> topics = userTopicRepository.findByUser(user);
+        if (topics.size() != 0)
+            userTopicRepository.deleteAll(topics);
 
         List<UserTopic> userTopics = new ArrayList<>();
         for (TopicName topic : userInfoDto.getTopic()) {
@@ -159,7 +164,7 @@ public class UserService {
                 new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
 
         if (!passwordEncoder.matches(password, user.getPassword()))
-            throw new RuntimeException("패스워드 확인");
+            throw new RuntimeException("비밀번호를 확인해주세요.");
 
         TokenDto token = tokenGenerateValidator.generateToken(user);
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(user.getEmail());
@@ -214,41 +219,55 @@ public class UserService {
         return getUserDto(user, topicNames, userImage);
     }
 
-    public UserDto updateUser(String loginAccountEmail, UserDto updateDto, MultipartFile userImage) {
-        if (!loginAccountEmail.equals(updateDto.getEmail())) throw new RuntimeException("유저 정보 불일치");
-
-        User user = userRepository.findByEmail(updateDto.getEmail()).get();
-        user.setNickname(updateDto.getNickName());
-        user.setLevel(updateDto.getLevel());
-        user.setTarget(updateDto.getTarget());
-
-        List<UserTopic> topics = userTopicRepository.findByUser(user);
-        userTopicRepository.deleteAll(topics);
-
-        List<UserTopic> userTopics = new ArrayList<>();
-        for (TopicName topic : updateDto.getTopic()) {
-            Topic T = topicRepository.findByTopicName(topic).get();
-            UserTopic userTopic = new UserTopic();
-            userTopic.setTopic(T);
-            userTopic.setUser(user);
-            userTopics.add(userTopic);
-        }
-        if (userTopics.size()!=0) {
-            userTopics = userTopicRepository.saveAll(userTopics);
-        }
-
-        List<TopicName> topicNames = new ArrayList<>();
-        for (UserTopic userTopic: userTopics) {
-            topicNames.add(userTopic.getTopic().getTopicName());
-        }
-
+    public UserDto updateUser(String email, UserUpdateDto updateDto, MultipartFile userImage) {
+        User user = userRepository.findByEmail(email).get();
         UserImage savedImage = userImageRepository.findByUser(user).get();
-        UserImage newImage = saveImage(userImage);
-        savedImage.setName(newImage.getName());
-        savedImage.setOriginName(newImage.getOriginName());
-        savedImage.setPath(newImage.getPath());
+        List<UserTopic> topics = userTopicRepository.findByUser(user);
+        List<TopicName> topicNames = new ArrayList<>();
+
+        if (updateDto.getNickName() != null) user.setNickname(updateDto.getNickName());
+        if (updateDto.getLevel() != null) user.setLevel(updateDto.getLevel());
+        if (updateDto.getTarget() != null) user.setTarget(updateDto.getTarget());
+        if (updateDto.getTopic() != null) {
+            userTopicRepository.deleteAll(topics);
+
+            List<UserTopic> userTopics = new ArrayList<>();
+            for (TopicName topic : updateDto.getTopic()) {
+                Topic T = topicRepository.findByTopicName(topic).get();
+                UserTopic userTopic = new UserTopic();
+                userTopic.setTopic(T);
+                userTopic.setUser(user);
+                userTopics.add(userTopic);
+            }
+            if (userTopics.size()!=0) {
+                userTopics = userTopicRepository.saveAll(userTopics);
+            }
+
+            for (UserTopic userTopic: userTopics) {
+                topicNames.add(userTopic.getTopic().getTopicName());
+            }
+        } else {
+            for (UserTopic userTopic: topics) {
+                topicNames.add(userTopic.getTopic().getTopicName());
+            }
+        }
+        if (userImage != null ) {
+            if (!savedImage.getName().equals(PROFILE_DEFAULT_IMAGE))
+                deleteImage(savedImage.getName());
+            UserImage newImage = saveImage(userImage);
+            savedImage.setName(newImage.getName());
+            savedImage.setOriginName(newImage.getOriginName());
+            savedImage.setPath(newImage.getPath());
+        }
 
         return getUserDto(user, topicNames, savedImage);
+    }
+
+    private void deleteImage(String name) {
+        File file = new File(imgLocation+"/"+name);
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     public void findPassword(String email, String name, String birth) {
@@ -286,5 +305,17 @@ public class UserService {
         }
         sb.append(sp.charAt(sr.nextInt(sp.length())));
         return sb.toString();
+    }
+
+    public void updatePassword(String email, PasswordUpdateDto passwordDto) {
+        if (!passwordDto.getNewPassword1().equals(passwordDto.getNewPassword2()))
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+
+        User user = userRepository.findByEmail(email).get();
+
+        if (!passwordEncoder.matches(passwordDto.getExPassword(), user.getPassword()))
+            throw new RuntimeException("비밀번호를 확인해주세요.");
+
+        user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword1()));
     }
 }
