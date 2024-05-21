@@ -1,8 +1,7 @@
 package com.thinkbigdata.clevo.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -12,7 +11,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "LearningLogs")
 @EntityListeners(AuditingEntityListener.class)
-@Getter @Setter
+@Getter @Setter @Builder
+@NoArgsConstructor @AllArgsConstructor
 public class LearningLog {
     @Id @Column(name = "Learning_log_id") @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
