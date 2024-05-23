@@ -26,18 +26,21 @@ import java.time.Duration;
 @RequiredArgsConstructor
 public class SecurityConfig {
     private final JwtAuthFilter jwtAuthFilter;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.httpBasic(HttpBasicConfigurer::disable).csrf(CsrfConfigurer::disable).formLogin(FormLoginConfigurer::disable)
+        http.httpBasic(HttpBasicConfigurer::disable)
+                .csrf(CsrfConfigurer::disable)
+                .formLogin(FormLoginConfigurer::disable)
                 .logout(configurer -> configurer.disable())
                 .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.authorizeHttpRequests(authorize ->
-                authorize.requestMatchers("/actuator/**","/h2-console/**", "/signup/user", "/signup/info", "/find/password", "/login",
-                            "/refresh/token", "/error").permitAll()
-                            .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                            .anyRequest().authenticated())
+                        authorize.requestMatchers("/actuator/**", "/h2-console/**", "/signup/user", "/signup/info", "/find/password", "/login",
+                                        "/refresh/token", "/error", "/record.html", "/recorder.js", "/static/**", "/css/**", "/js/**", "/api/upload-audio").permitAll()
+                                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                                .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
