@@ -24,7 +24,7 @@ public class AudioController {
             String base64Audio = payload.get("audio");
             logger.info("Received audio data from frontend");
 
-            // Base64 데이터를 16kHz로 변환 및 API 호출
+            // Base64 데이터를 API 호출
             String result = sendAudioToApi(base64Audio);
             logger.info("API call result: " + result);
 
@@ -47,6 +47,7 @@ public class AudioController {
         body.put("request_id", "reserved field");
         Map<String, String> argument = new HashMap<>();
         argument.put("language_code", "english");
+        // "script" 옵션은 추후 상의 후 결정 예정
         // argument.put("script", "PRONUNCIATION_SCRIPT");
         argument.put("audio", base64Audio);
         body.put("argument", argument);
