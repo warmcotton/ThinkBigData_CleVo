@@ -1,6 +1,7 @@
 const startRecordButton = document.getElementById('startRecord');
 const stopRecordButton = document.getElementById('stopRecord');
 const submitButton = document.getElementById('submit');
+const downloadButton = document.getElementById('download');
 const audioPlayback = document.getElementById('audioPlayback');
 
 let mediaRecorder;
@@ -41,6 +42,7 @@ startRecordButton.addEventListener('click', () => {
                 startRecordButton.disabled = false;
                 stopRecordButton.disabled = true;
                 submitButton.disabled = false;
+                downloadButton.disabled = false;
             };
 
             startRecordButton.disabled = true;
@@ -53,6 +55,7 @@ stopRecordButton.addEventListener('click', () => {
     startRecordButton.disabled = false;
     stopRecordButton.disabled = true;
     submitButton.disabled = false;
+    downloadButton.disabled = false;
 });
 
 submitButton.addEventListener('click', () => {
@@ -72,15 +75,26 @@ submitButton.addEventListener('click', () => {
         .then(data => {
             console.log('API response:', data);
             // "score.html"로 이동하면서 응답 데이터를 전달
-//            const params = new URLSearchParams(data).toString();
-//            window.location.href = `score.html?${params}`;
-            alert('성공');
+            const score = data.return_object.score;
+            window.location.href = `score.html?score=${score}`;
+//            alert('성공');
         })
         .catch(error => {
             console.error('Error:', error);
             alert('API 통신 중 에러가 발생했습니다.');
         });
     };
+});
+
+downloadButton.addEventListener('click', () => {
+    const audioUrl = URL.createObjectURL(wavBlob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = audioUrl;
+    a.download = 'recording.wav';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 });
 
 function flattenArray(channelBuffers) {
