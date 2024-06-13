@@ -38,10 +38,12 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/actuator/**", "/h2-console/**", "/signup/user", "/signup/info", "/find/password", "/login",
-                                        "/refresh/token", "/error", "/record.html", "/recorder.js", "/static/**", "/css/**", "/js/**", "/api/upload-audio").permitAll()
+                                        "/refresh/token", "/error", "/record.html", "/recorder.js", "/static/**", "/api/upload-audio", "/learning/score").permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.cors(); // CORS 설정 활성화
 
         return http.build();
     }
