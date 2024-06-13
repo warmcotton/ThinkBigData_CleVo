@@ -1,9 +1,15 @@
 package com.thinkbigdata.clevo.controller;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.thinkbigdata.clevo.dto.LearningLogDto;
 import com.thinkbigdata.clevo.dto.SentenceDto;
+
 import com.thinkbigdata.clevo.service.LearningService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +21,9 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 public class LearningController {
+
+    private static final Logger logger = LoggerFactory.getLogger(LearningController.class);
+
     private final LearningService learningService;
 
     @GetMapping("/learning/new-sentences")
@@ -33,15 +42,26 @@ public class LearningController {
     }
 
     @PostMapping ("/learning/score")
-    public ResponseEntity<LearningLogDto> submitRecord(Authentication authentication, @RequestPart Map<String, Integer> sentenceId, @RequestPart MultipartFile record) {
-        if (!sentenceId.containsKey("sentence_id"))
-            throw new RuntimeException("bad request");
-        if (sentenceId.get("sentence_id") == null)
-            throw new RuntimeException("bad request");
+    public ResponseEntity<String> handleScoreRequest(@RequestBody Map<String, String> payload) {
+        try {
+            ResponseEntity<String> response = AudioController.handleAudioUpload(payload);
+            logger.info("Received score from AudioController: " + response.getBody());
 
-        LearningLogDto score = learningService.getScore(authentication.getName(), sentenceId.get("sentence_id"), record);
-        return ResponseEntity.ok(score);
+            return ResponseEntity.ok(response.getBody());
+        } catch (Exception e){
+            logger.error("Error processing score request", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Internal Server Error");
+        }
     }
+//    public ResponseEntity<LearningLogDto> submitRecord(Authentication authentication, @RequestPart Map<String, Integer> sentenceId, @RequestPart MultipartFile record) {
+//        if (!sentenceId.containsKey("sentence_id"))
+//            throw new RuntimeException("bad request");
+//        if (sentenceId.get("sentence_id") == null)
+//            throw new RuntimeException("bad request");
+//
+//        LearningLogDto score = learningService.getScore(authentication.getName(), sentenceId.get("sentence_id"), record);
+//        return ResponseEntity.ok(score);
+//    }
 
 //    @GetMapping("/learning/user-sentences")
 //    public List<SentenceDto> getUserSentences(Authentication authentication) {
