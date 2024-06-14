@@ -1,9 +1,12 @@
 const startRecordButton = document.getElementById('startRecord');
 const stopRecordButton = document.getElementById('stopRecord');
+const submitButton = document.getElementById('submit');
+const downloadButton = document.getElementById('download');
 const audioPlayback = document.getElementById('audioPlayback');
 
 let mediaRecorder;
 let audioChunks = [];
+let wavBlob;
 
 startRecordButton.addEventListener('click', () => {
     navigator.mediaDevices.getUserMedia({ audio: true })
@@ -30,34 +33,16 @@ startRecordButton.addEventListener('click', () => {
 
                 // Float32Array chunks를 Blob으로 변환
                 const buffer = flattenArray(audioChunks);
-                const wavBlob = encodeWAV(buffer, 16000);
+                wavBlob = encodeWAV(buffer, 16000);
 
                 audioChunks = [];
                 const audioUrl = URL.createObjectURL(wavBlob);
                 audioPlayback.src = audioUrl;
 
-                // base64로 변환 후 백엔드에 전송
-                const reader = new FileReader();
-                reader.readAsDataURL(wavBlob);
-                reader.onloadend = () => {
-                    const base64AudioMessage = reader.result.split(',')[1];
-                    fetch('/api/upload-audio', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ audio: base64AudioMessage })
-                    })
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log('API response:', data);
-                        alert('점수 획득 완료. 콘솔을 확인해주세요.');
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('API 통신 중 에러가 발생했습니다.');
-                    });
-                };
+                startRecordButton.disabled = false;
+                stopRecordButton.disabled = true;
+                submitButton.disabled = false;
+                downloadButton.disabled = false;
             };
 
             startRecordButton.disabled = true;
@@ -69,6 +54,47 @@ stopRecordButton.addEventListener('click', () => {
     mediaRecorder.stop();
     startRecordButton.disabled = false;
     stopRecordButton.disabled = true;
+    submitButton.disabled = false;
+    downloadButton.disabled = false;
+});
+
+submitButton.addEventListener('click', () => {
+    // base64로 변환 후 백엔드에 전송
+    const reader = new FileReader();
+    reader.readAsDataURL(wavBlob);
+    reader.onloadend = () => {
+        const base64AudioMessage = reader.result.split(',')[1];
+        fetch('/learning/score', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ audio: base64AudioMessage })
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('API response:', data);
+            // "score.html"로 이동하면서 응답 데이터를 전달
+            const score = data.return_object.score;
+            window.location.href = `score.html?score=${score}`;
+//            alert('성공');
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('API 통신 중 에러가 발생했습니다.');
+        });
+    };
+});
+
+downloadButton.addEventListener('click', () => {
+    const audioUrl = URL.createObjectURL(wavBlob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = audioUrl;
+    a.download = 'recording.wav';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 });
 
 function flattenArray(channelBuffers) {

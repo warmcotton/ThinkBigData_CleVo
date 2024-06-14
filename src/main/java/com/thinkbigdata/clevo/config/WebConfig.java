@@ -14,10 +14,12 @@ public class WebConfig implements WebMvcConfigurer {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:8080")  // 필요에 따라 허용할 도메인 설정
+                        .allowedOrigins("*")  // 필요에 따라 허용할 도메인 설정
+//                        .allowedOrigins("http://localhost:8080", "file:///")  // 필요에 따라 허용할 도메인 설정
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(true);
+                        .allowCredentials(false);
+//                        .allowCredentials(true);
             }
         };
     }

@@ -19,7 +19,7 @@ public class AudioController {
     private static final Logger logger = LoggerFactory.getLogger(AudioController.class);
 
     @PostMapping("/api/upload-audio")
-    public ResponseEntity<String> handleAudioUpload(@RequestBody Map<String, String> payload) {
+    public static ResponseEntity<String> handleAudioUpload(@RequestBody Map<String, String> payload) {
         try {
             String base64Audio = payload.get("audio");
             logger.info("Received audio data from frontend");
@@ -35,7 +35,7 @@ public class AudioController {
         }
     }
 
-    private String sendAudioToApi(String base64Audio) {
+    private static String sendAudioToApi(String base64Audio) {
         String url = "http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation";
         RestTemplate restTemplate = new RestTemplate();
 
