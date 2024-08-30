@@ -8,9 +8,9 @@ import lombok.Setter;
 @Table(name = "Sentences")
 @Getter @Setter
 public class Sentence {
-    @Id @Column(name = "Sentence_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "Sentence_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @JoinColumn(name = "Topic_id", nullable = false) @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "Topic_id", nullable = false) @ManyToOne(fetch = FetchType.LAZY)
     private Topic topic;
     @Column(name = "Sentence_eng", nullable = false)
     private String eng;

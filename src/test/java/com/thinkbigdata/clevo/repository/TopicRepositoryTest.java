@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,10 +48,8 @@ class TopicRepositoryTest {
 
         Topic newtopic = new Topic();
         newtopic.setTopicName(TopicName.TOPIC1);
-        topicRepository.save(newtopic);
-        assertThrows(ConstraintViolationException.class, () -> {
-            testEntityManager.flush();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            topicRepository.save(newtopic);
         });
     }
-
 }

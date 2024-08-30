@@ -9,7 +9,7 @@ import com.thinkbigdata.clevo.topic.TopicName;
 @Table(name = "Topics")
 @Getter @Setter
 public class Topic {
-    @Id @Column(name = "Topic_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "Topic_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "Topic_name", unique = true, nullable = false) @Enumerated(EnumType.STRING)
     private TopicName topicName;

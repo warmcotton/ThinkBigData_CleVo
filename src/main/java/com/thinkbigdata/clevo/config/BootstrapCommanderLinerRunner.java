@@ -24,20 +24,20 @@ public class BootstrapCommanderLinerRunner implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     @Override
     public void run(String... args) throws Exception {
-        Topic topic1 = new Topic();
-        Topic topic2 = new Topic();
-        Topic topic3 = new Topic();
-        User admin = User.builder().email("admin@admin.com").name("admin").nickname("admin")
-                .birth(LocalDate.now()).gender("M")
-                .build();
-        admin.setPassword(passwordEncoder.encode("Admin1111!"));
-        admin.setRole(Role.ADMIN);
-
-        topic1.setTopicName(TopicName.TOPIC1);
-        topic2.setTopicName(TopicName.TOPIC2);
-        topic3.setTopicName(TopicName.TOPIC3);
-
-        topicRepository.saveAll(Arrays.asList(topic1, topic2, topic3));
-        userRepository.save(admin);
+//        Topic topic1 = new Topic();
+//        Topic topic2 = new Topic();
+//        Topic topic3 = new Topic();
+//        User admin = User.builder().email("admin@admin.com").name("admin").nickname("admin")
+//                .birth(LocalDate.now()).gender("M")
+//                .build();
+//        admin.setPassword(passwordEncoder.encode("Admin1111!"));
+//        admin.setRole(Role.ADMIN);
+//
+//        topic1.setTopicName(TopicName.TOPIC1);
+//        topic2.setTopicName(TopicName.TOPIC2);
+//        topic3.setTopicName(TopicName.TOPIC3);
+//
+//        topicRepository.saveAll(Arrays.asList(topic1, topic2, topic3));
+//        userRepository.save(admin);
     }
 }
