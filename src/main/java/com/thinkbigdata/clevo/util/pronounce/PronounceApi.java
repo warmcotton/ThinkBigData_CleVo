@@ -20,7 +20,7 @@ public class PronounceApi {
     @Value("${api.path}") private String PATH;
     @Value("${api.key}") private String accessKey;
 
-    public Map<String, String> requestToServer(ObjectNode request) throws IOException {
+    public String requestToServer(ObjectNode request) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(List.of(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -28,8 +28,7 @@ public class PronounceApi {
 
         HttpEntity<JsonNode> requestEntity = new HttpEntity<>(request, headers);
 
-        ResponseEntity<Map<String, String>> result = restTemplate.exchange(PATH, HttpMethod.POST, requestEntity,
-                    new ParameterizedTypeReference<Map<String, String>>() {});
+        ResponseEntity<String> result = restTemplate.exchange(PATH, HttpMethod.POST, requestEntity, String.class);
 
         return result.getBody();
     }

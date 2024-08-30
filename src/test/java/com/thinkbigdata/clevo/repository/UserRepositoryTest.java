@@ -28,7 +28,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestEntityManager
 @ActiveProfiles("test")
 @Transactional
-@EnableJpaAuditing
 public class UserRepositoryTest {
     @Autowired
     UserRepository userRepository;

@@ -38,12 +38,10 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests(authorize ->
                         authorize.requestMatchers("/actuator/**", "/h2-console/**", "/signup/user", "/signup/info", "/find/password", "/login",
-                                        "/refresh/token", "/error", "/record.html", "/recorder.js", "/score.html", "/score.js", "/static/**", "/api/upload-audio", "/learning/score").permitAll()
+                                        "/refresh/token", "/error", "/record.html", "/recorder.js", "/static/**", "/css/**", "/js/**", "/api/upload-audio").permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        http.cors(); // CORS 설정 활성화
 
         return http.build();
     }
@@ -51,8 +49,8 @@ public class SecurityConfig {
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
         return builder.requestFactory(() -> new BufferingClientHttpRequestFactory(new SimpleClientHttpRequestFactory()))
-                .setConnectTimeout(Duration.ofMillis(5000))
-                .setReadTimeout(Duration.ofMillis(5000))
+                .setConnectTimeout(Duration.ofMillis(10000))
+                .setReadTimeout(Duration.ofMillis(10000))
                 .additionalMessageConverters(new StringHttpMessageConverter(Charset.forName("UTF-8")))
                 .build();
     }

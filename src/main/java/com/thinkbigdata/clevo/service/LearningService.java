@@ -4,23 +4,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.thinkbigdata.clevo.dto.LearningLogDto;
 import com.thinkbigdata.clevo.dto.SentenceDto;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
+import com.thinkbigdata.clevo.topic.TopicName;
 import com.thinkbigdata.clevo.util.pronounce.PronounceApi;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,10 +26,9 @@ public class LearningService {
     private final UserRepository userRepository;
     private final SentenceRepository sentenceRepository;
     private final UserTopicRepository userTopicRepository;
+    private final TopicRepository topicRepository;
     private final LearningLogRepository learningLogRepository;
-    private final UserRecordRepository userRecordRepository;
     private final PronounceApi pronounceApi;
-    @Value("${record.location}") private String recordLocation;
     public List<SentenceDto> getNewSentences(String email) {
         User user = userRepository.findByEmail(email).get();
 
@@ -57,81 +51,70 @@ public class LearningService {
                 .eng(sentence.getEng()).kor(sentence.getKor()).level(sentence.getLevel()).build();
     }
 
-    public LearningLogDto getScore(String email, Integer sentenceId, MultipartFile record) {
-        User user = userRepository.findByEmail(email).get();
-        Sentence sentence = sentenceRepository.findById(sentenceId).orElseThrow(() ->
-                new RuntimeException("문장 정보가 없습니다."));
+    public void saveSentence() {
+        Sentence sentence = new Sentence();
+        sentence.setEng("eng");
+        sentence.setKor("한");
+        sentence.setTopic(topicRepository.findByTopicName(TopicName.TOPIC1).get());
+        sentence.setLevel(8);
+        sentenceRepository.save(sentence);
+    }
 
-        String languageCode = "english";
-        String script = sentence.getEng();
-        UserRecord userRecord = saveRecord(record);
-        String audioContents = null;
+    public Float getResult(String email, SentenceDto sentence) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
 
+        Topic topic = topicRepository.findByTopicName(sentence.getTopic()).orElseThrow(() ->
+                new NoSuchElementException("토픽 정보가 없습니다."));
+
+        Optional<Sentence> optst = sentenceRepository.findByEng(sentence.getEng());
+        Sentence st = null;
+
+        //없다면 새로 저장
+        if (optst.isEmpty()) {
+            st = new Sentence();
+            st.setEng(sentence.getEng());
+            st.setKor(sentence.getKor());
+            st.setTopic(topic);
+            st.setLevel(sentence.getLevel());
+            sentenceRepository.save(st);
+        } else {
+            st = optst.get();
+        }
+
+        // api 요청
         ObjectNode requests = JsonNodeFactory.instance.objectNode();
         ObjectNode arguments = JsonNodeFactory.instance.objectNode();
 
-        try {
-            Path path = Paths.get(recordLocation+"/"+userRecord.getName());
-            byte[] audioBytes = Files.readAllBytes(path);
-            audioContents = Base64.getEncoder().encodeToString(audioBytes);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        arguments.put("language_code", languageCode);
-        arguments.put("script", script);
-        arguments.put("audio", audioContents);
+        arguments.put("language_code", "english");
+        arguments.put("audio", sentence.getBase64());
         requests.put("argument", arguments);
 
-        //api
-        Map<String, String> result = null;
+        String result = null;
         try {
-             result = pronounceApi.requestToServer(requests);
+            result = pronounceApi.requestToServer(requests);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        if (result.get("result").equals("-1"))
-            throw new RuntimeException("api 요청 오류");
-
-        ObjectMapper mapper = new ObjectMapper();
-
-        Map<String, String> sc = null;
+        Map<String, Object> res = null;
+        ObjectMapper objectMapper = new ObjectMapper();
         try {
-            sc = mapper.readValue(result.get("return_object"), Map.class);
+            res = objectMapper.readValue(result, Map.class);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("파싱 오류");
-        }
-
-        userRecordRepository.save(userRecord);
-        LearningLog log = LearningLog.builder().user(user).sentence(sentence).record(userRecord)
-                        .clarity(Integer.valueOf(sc.get("score"))).fluency(Integer.valueOf(sc.get("score"))).totalScore(5).build();
-        LearningLog learningLog = learningLogRepository.saveAndFlush(log);
-
-        return LearningLogDto.builder().id(learningLog.getId()).user(user.getEmail()).sentence(sentence.getId())
-                .path(userRecord.getPath()).clarity(learningLog.getClarity()).fluency(learningLog.getFluency())
-                .average(learningLog.getTotalScore()).time(learningLog.getDate()).build();
-    }
-
-    private UserRecord saveRecord(MultipartFile record) {
-        String originName = record.getOriginalFilename();
-        String extension = originName.substring(originName.lastIndexOf("."));
-        String savedFileName = UUID.randomUUID() + extension;
-        String path = "/records/clevo/"+savedFileName;
-
-        try {
-            FileOutputStream fos = new FileOutputStream(recordLocation+"/"+savedFileName);
-            fos.write(record.getBytes());
-            fos.close();
-        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        UserRecord userRecord = new UserRecord();
-        userRecord.setName(savedFileName);
-        userRecord.setOriginName(originName);
-        userRecord.setPath(path);
+        if ((Integer) res.get("result") == -1 )
+            throw new RuntimeException("API 호출 결과가 유효하지 않습니다.");
 
-        return userRecord;
+        Map<String, String> value = (Map<String, String>) res.get("return_object");
+
+        float score = Float.parseFloat(value.get("score")); //parsing error 처리
+        // 결과 저장
+        LearningLog log = LearningLog.builder().user(user).sentence(st).clarity(score).fluency(score).totalScore(score).build();
+        learningLogRepository.save(log);
+
+        return score;
     }
 }

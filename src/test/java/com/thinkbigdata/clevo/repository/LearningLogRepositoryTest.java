@@ -22,7 +22,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @AutoConfigureTestEntityManager
 @ActiveProfiles("test")
 @Transactional
-@EnableJpaAuditing
 class LearningLogRepositoryTest {
     @Autowired
     LearningLogRepository learningLogRepository;
@@ -32,8 +31,6 @@ class LearningLogRepositoryTest {
     TopicRepository topicRepository;
     @Autowired
     SentenceRepository sentenceRepository;
-    @Autowired
-    UserRecordRepository userRecordRepository;
     @Autowired
     TestEntityManager testEntityManager;
     void saveUser() {
@@ -48,14 +45,7 @@ class LearningLogRepositoryTest {
         userRepository.save(user);
         testEntityManager.flush();
     }
-    void saveUserRecord() {
-        UserRecord userRecord = new UserRecord();
-        userRecord.setName("random_salt.wav");
-        userRecord.setOriginName("original_name.wav");
-        userRecord.setPath("C:/clevo/record/wav");
-        userRecordRepository.save(userRecord);
-        testEntityManager.flush();
-    }
+
     void saveTopics() {
         for (TopicName topicName: TopicName.values()) {
             Topic topic = new Topic();
@@ -78,22 +68,19 @@ class LearningLogRepositoryTest {
         saveUser();
         saveTopics();
         saveSentence();
-        saveUserRecord();
     }
 
     @Test
     void save() {
         Optional<User> user = userRepository.findByEmail("test@test.com");
         Optional<Sentence> sentence = sentenceRepository.findByEng("test Sentence");
-        Optional<UserRecord> userRecord = userRecordRepository.findByName("random_salt.wav");
 
         LearningLog learningLog = new LearningLog();
         learningLog.setUser(user.get());
         learningLog.setSentence(sentence.get());
-        learningLog.setRecord(userRecord.get());
-        learningLog.setClarity(5);
-        learningLog.setFluency(3);
-        learningLog.setTotalScore(8);
+        learningLog.setClarity(5.0F);
+        learningLog.setFluency(3.0F);
+        learningLog.setTotalScore(8.0F);
         LearningLog savedLog = learningLogRepository.save(learningLog);
 
         System.out.println(savedLog.getUser().getEmail());

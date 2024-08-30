@@ -1,8 +1,21 @@
 package com.thinkbigdata.clevo.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.thinkbigdata.clevo.dto.SentenceDto;
+import com.thinkbigdata.clevo.entity.*;
+import com.thinkbigdata.clevo.repository.*;
+import com.thinkbigdata.clevo.util.pronounce.PronounceApi;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.HttpHeaders;
@@ -10,16 +23,26 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.UUID;
 
 @RestController
+@RequiredArgsConstructor
+@Transactional
 public class AudioController {
 
     private static final Logger logger = LoggerFactory.getLogger(AudioController.class);
+    private final UserRepository userRepository;
+    private final TopicRepository topicRepository;
+    private final SentenceRepository sentenceRepository;
+    private final PronounceApi pronounceApi;
+    private final LearningLogRepository learningLogRepository;
 
     @PostMapping("/api/upload-audio")
-    public static ResponseEntity<String> handleAudioUpload(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<String> handleAudioUpload(@RequestBody Map<String, String> payload) {
         try {
             String base64Audio = payload.get("audio");
             logger.info("Received audio data from frontend");
@@ -35,7 +58,7 @@ public class AudioController {
         }
     }
 
-    private static String sendAudioToApi(String base64Audio) {
+    private String sendAudioToApi(String base64Audio) {
         String url = "http://aiopen.etri.re.kr:8000/WiseASR/Pronunciation";
         RestTemplate restTemplate = new RestTemplate();
 
