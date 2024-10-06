@@ -2,7 +2,7 @@ package com.thinkbigdata.clevo.repository;
 
 import com.thinkbigdata.clevo.entity.Sentence;
 import com.thinkbigdata.clevo.entity.Topic;
-import com.thinkbigdata.clevo.topic.TopicName;
+import com.thinkbigdata.clevo.category.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +29,9 @@ public class SentenceRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
     void saveTopics() {
-        for (TopicName topicName: TopicName.values()) {
+        for (Category category : Category.values()) {
             Topic topic = new Topic();
-            topic.setTopicName(topicName);
+            topic.setCategory(category);
             topicRepository.save(topic);
         }
     }
@@ -43,10 +43,9 @@ public class SentenceRepositoryTest {
 
     @Test
     void save() {
-        Optional<Topic> topic = topicRepository.findByTopicName(TopicName.TOPIC1);
+        Optional<Topic> topic = topicRepository.findByCategory(Category.TOPIC1);
         Sentence sentence = new Sentence();
 
-        sentence.setTopic(topic.get());
         sentence.setEng("test Sentence");
         sentence.setKor("테스트 문장");
         sentence.setLevel(10);
@@ -55,7 +54,6 @@ public class SentenceRepositoryTest {
         testEntityManager.flush();
 
         System.out.println(savedSentence.getId());
-        System.out.println(savedSentence.getTopic().getTopicName());
         System.out.println(savedSentence.getEng());
         System.out.println(savedSentence.getKor());
         assertNotNull(savedSentence);
@@ -66,11 +64,10 @@ public class SentenceRepositoryTest {
     @Test
     void save_with_undefined_topic() {
         Topic topic = new Topic();
-        topic.setTopicName(TopicName.TOPIC3);
+        topic.setCategory(Category.TOPIC3);
 
         Sentence sentence = new Sentence();
 
-        sentence.setTopic(topic);
         sentence.setEng("test Sentence");
         sentence.setKor("테스트 문장");
         sentence.setLevel(10);

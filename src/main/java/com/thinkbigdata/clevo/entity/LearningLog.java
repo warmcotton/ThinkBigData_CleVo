@@ -20,12 +20,12 @@ public class LearningLog {
     private User user;
     @JoinColumn(name = "Sentence_id", nullable = false) @ManyToOne(fetch = FetchType.LAZY)
     private Sentence sentence;
-    @Column(name = "Learning_log_clarity", nullable = false)
-    private Float clarity;
+    @Column(name = "Learning_log_accuracy", nullable = false)
+    private Double accuracy;
     @Column(name = "Learning_log_fluency", nullable = false)
-    private Float fluency;
+    private Double fluency;
     @Column(name = "Learning_log_total_score", nullable = false)
-    private Float totalScore;
+    private Double totalScore;
     @CreatedDate @Column(name = "Learning_log_date", nullable = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime date;
 }

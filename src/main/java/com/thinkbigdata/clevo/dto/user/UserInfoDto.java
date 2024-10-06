@@ -1,6 +1,6 @@
 package com.thinkbigdata.clevo.dto.user;
 
-import com.thinkbigdata.clevo.topic.TopicName;
+import com.thinkbigdata.clevo.category.Category;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,12 +10,9 @@ import java.util.List;
 @Getter @Setter
 public class UserInfoDto {
     @NotNull
-    @Min(value = 1) @Max(value = 10)
+    @Min(value = 1) @Max(value = 3)
     private Integer level;
     @NotNull
-    @Min(value = 1) @Max(value = 10)
-    private Integer target;
-    @NotNull
-    @Size(min = 3, max = 10)
-    private List<TopicName> topic;
+    @Size(min = 1, max = 5)
+    private List<Category> category;
 }
