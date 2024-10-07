@@ -10,8 +10,6 @@ import lombok.Setter;
 public class Sentence {
     @Id @Column(name = "Sentence_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @JoinColumn(name = "Topic_id", nullable = false) @ManyToOne(fetch = FetchType.LAZY)
-    private Topic topic;
     @Column(name = "Sentence_eng", nullable = false)
     private String eng;
     @Column(name = "Sentence_kor", nullable = false)

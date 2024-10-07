@@ -1,19 +1,12 @@
 package com.thinkbigdata.clevo.config;
 
-import com.thinkbigdata.clevo.entity.Topic;
-import com.thinkbigdata.clevo.entity.User;
 import com.thinkbigdata.clevo.repository.TopicRepository;
 import com.thinkbigdata.clevo.repository.UserRepository;
-import com.thinkbigdata.clevo.role.Role;
-import com.thinkbigdata.clevo.topic.TopicName;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDate;
-import java.util.Arrays;
 
 @Component
 @RequiredArgsConstructor

@@ -46,10 +46,30 @@ public class UserController {
         return ResponseEntity.ok(userDto);
     }
 
-    //nickname, level, target, topic, image
-    @PutMapping("/user")
-    public ResponseEntity<UserDto> updateUser(Authentication authentication, @RequestPart @Valid UserUpdateDto updateDto, @RequestPart(required = false) MultipartFile userImage) {
-        UserDto userDto = userService.updateUser(authentication.getName(), updateDto, userImage);
+    @GetMapping("/dashboard")
+    public ResponseEntity<UserDashBoardDto> userDashboard(Authentication authentication) {
+        UserDashBoardDto dashBoardDto = userService.userDashboard(authentication.getName());
+        return ResponseEntity.ok(dashBoardDto);
+    }
+
+    @PutMapping("/user-info")
+    public ResponseEntity<UserDto> updateUserInfo(Authentication authentication, @RequestBody @Valid UserInfoUpdateDto updateDto) {
+        UserDto userDto = userService.updateUserInfo(authentication.getName(), updateDto);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PutMapping("/user-profile")
+    public ResponseEntity<UserDto> updateUserProfile(Authentication authentication, @RequestPart @Valid UserProfileUpdateDto updateDto, @RequestPart(required = false) MultipartFile userImage) {
+        UserDto userDto = userService.updateUserProfile(authentication.getName(), updateDto, userImage);
+        return ResponseEntity.ok(userDto);
+    }
+
+    @PutMapping("/user-target")
+    public ResponseEntity<UserDto> updateUserTarget(Authentication authentication,@RequestBody Map<String, Integer> target) {
+        if(!target.containsKey("target")) throw new RuntimeException("bad request");
+        if(target.get("target")==null) throw new RuntimeException("bad request");
+        if(target.get("target") > 10 || target.get("target") < 1) throw new RuntimeException("bad request");
+        UserDto userDto = userService.updateTarget(authentication.getName(), target.get("target"));
         return ResponseEntity.ok(userDto);
     }
 

@@ -1,6 +1,6 @@
 package com.thinkbigdata.clevo.entity;
 
-import com.thinkbigdata.clevo.role.Role;
+import com.thinkbigdata.clevo.enums.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

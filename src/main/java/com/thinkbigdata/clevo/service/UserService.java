@@ -4,7 +4,7 @@ import com.thinkbigdata.clevo.dto.*;
 import com.thinkbigdata.clevo.dto.user.*;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
-import com.thinkbigdata.clevo.topic.TopicName;
+import com.thinkbigdata.clevo.enums.Category;
 import com.thinkbigdata.clevo.util.email.EmailSender;
 import com.thinkbigdata.clevo.util.token.TokenGenerateValidator;
 import io.jsonwebtoken.Jwts;
@@ -35,11 +35,13 @@ import java.util.concurrent.TimeUnit;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+    private final BasicEntityService basicEntityService;
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final UserTopicRepository userTopicRepository;
     private final TopicRepository topicRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final SentenceService sentenceService;
     private final PasswordEncoder passwordEncoder;
     private final TokenGenerateValidator tokenGenerateValidator;
     private final RedisTemplate<String, String> redisTemplate;
@@ -51,7 +53,7 @@ public class UserService {
     private byte[] bytes;
     private Key key;
     private static final String PROFILE_DEFAULT_IMAGE = "default-profile.jpg";
-
+    private static final Integer DEFAULT_TARGET = 5;
 
     @PostConstruct
     private void init() {
@@ -63,7 +65,7 @@ public class UserService {
         if (!registerDto.getPassword2().equals(registerDto.getPassword1()))
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
 
-        User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickName())
+        User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickname())
                 .birth(registerDto.getBirth()).gender(registerDto.getGender())
                 .build();
         user.setPassword(passwordEncoder.encode(registerDto.getPassword1()));
@@ -71,10 +73,10 @@ public class UserService {
 
         UserImage userImage = saveDefaultImage();
         userImage.setUser(savedUser);
-        UserImage savedUserImage = userImageRepository.save(userImage);
+        userImageRepository.save(userImage);
 
         redisTemplate.opsForValue().set("sessionId:"+sessionId, user.getEmail(), 300000L, TimeUnit.MILLISECONDS);
-        return getUserDto(savedUser, savedUserImage);
+        return basicEntityService.getUserDto(savedUser);
     }
 
     public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) {
@@ -82,18 +84,18 @@ public class UserService {
             throw new RuntimeException("세션 정보 불일치");
         }
         String email = redisTemplate.opsForValue().get("sessionId:"+sessionId);
-        User user = userRepository.findByEmail(email).get();
 
+        User user = basicEntityService.getUserByEmail(email);
         user.setLevel(userInfoDto.getLevel());
-        user.setTarget(userInfoDto.getTarget());
+        user.setTarget(DEFAULT_TARGET);
 
         List<UserTopic> topics = userTopicRepository.findByUser(user);
         if (topics.size() != 0)
             userTopicRepository.deleteAll(topics);
 
         List<UserTopic> userTopics = new ArrayList<>();
-        for (TopicName topic : userInfoDto.getTopic()) {
-            Topic T = topicRepository.findByTopicName(topic).get();
+        for (Category category : userInfoDto.getCategory()) {
+            Topic T = topicRepository.findByCategory(category).get();
             UserTopic userTopic = new UserTopic();
             userTopic.setTopic(T);
             userTopic.setUser(user);
@@ -101,16 +103,10 @@ public class UserService {
         }
 
         if (userTopics.size()!=0) {
-            userTopics = userTopicRepository.saveAll(userTopics);
+            userTopicRepository.saveAll(userTopics);
         }
 
-        List<TopicName> topicNames = new ArrayList<>();
-        for (UserTopic userTopic: userTopics) {
-            topicNames.add(userTopic.getTopic().getTopicName());
-        }
-        UserImage userImage = userImageRepository.findByUser(user).get();
-
-        return getUserDto(user, topicNames, userImage);
+        return basicEntityService.getUserDto(user);
     }
 
     private UserImage saveImage(MultipartFile imageFile) {
@@ -146,22 +142,15 @@ public class UserService {
         return userImage;
     }
 
-    private UserDto getUserDto(User user, UserImage image) {
-        return UserDto.builder().email(user.getEmail()).name(user.getName()).nickName(user.getNickname()).birth(user.getBirth())
-                .gender(user.getGender()).level(user.getLevel()).target(user.getTarget()).role(user.getRole()).imgPath(image.getPath())
-                .createdDate(user.getDate()).lastLoginDate(user.getLast()).build();
-    }
-
-    private UserDto getUserDto(User user, List<TopicName> topicList, UserImage image) {
-        return UserDto.builder().email(user.getEmail()).name(user.getName()).nickName(user.getNickname()).birth(user.getBirth())
-                .gender(user.getGender()).level(user.getLevel()).target(user.getTarget()).role(user.getRole()).imgPath(image.getPath())
-                .topic(topicList).createdDate(user.getDate()).lastLoginDate(user.getLast()).build();
+    private UserDto getUserDto(User user, List<Category> topicList, UserImage image) {
+        return UserDto.builder().email(user.getEmail()).name(user.getName()).nickname(user.getNickname()).birth(user.getBirth())
+                .gender(user.getGender()).level(user.getLevel()).target(user.getTarget()).role(user.getRole()).img_path(image.getPath())
+                .category(topicList).created_date(user.getDate()).lastLogin_date(user.getLast()).build();
     }
 
     //Generate Access, Refresh Token
     public TokenDto login(String email, String password) {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
+        User user = basicEntityService.getUserByEmail(email);
 
         if (!passwordEncoder.matches(password, user.getPassword()))
             throw new RuntimeException("비밀번호를 확인해주세요.");
@@ -198,7 +187,7 @@ public class UserService {
             throw new RuntimeException("토큰 정보 만료");
         }
 
-        User user = userRepository.findByEmail(refreshToken.getEmail()).get();
+        User user = basicEntityService.getUserByEmail(refreshToken.getEmail());
         TokenDto token = tokenGenerateValidator.generateToken(user);
         Date expiration = Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token.getRefresh()).getBody().getExpiration();
 
@@ -208,49 +197,49 @@ public class UserService {
     }
 
     public UserDto getUser(String email) {
-        User user = userRepository.findByEmail(email).get();
-        List<UserTopic> topic = userTopicRepository.findByUser(user);
-        List<TopicName> topicNames = new ArrayList<>();
-        for (UserTopic userTopic: topic) {
-            topicNames.add(userTopic.getTopic().getTopicName());
-        }
-        UserImage userImage = userImageRepository.findByUser(user).get();
-
-        return getUserDto(user, topicNames, userImage);
+        User user = basicEntityService.getUserByEmail(email);
+        return basicEntityService.getUserDto(user);
     }
 
-    public UserDto updateUser(String email, UserUpdateDto updateDto, MultipartFile userImage) {
-        User user = userRepository.findByEmail(email).get();
-        UserImage savedImage = userImageRepository.findByUser(user).get();
-        List<UserTopic> topics = userTopicRepository.findByUser(user);
-        List<TopicName> topicNames = new ArrayList<>();
+    // target 수정
+    public UserDto updateTarget(String email, Integer target) {
+        User user = basicEntityService.getUserByEmail(email);
+        user.setTarget(target);
+        return basicEntityService.getUserDto(user);
+    }
 
-        if (updateDto.getNickName() != null) user.setNickname(updateDto.getNickName());
+    // level category 수정
+    public UserDto updateUserInfo(String email, UserInfoUpdateDto updateDto) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
+        List<UserTopic> topics = userTopicRepository.findByUser(user);
+
         if (updateDto.getLevel() != null) user.setLevel(updateDto.getLevel());
-        if (updateDto.getTarget() != null) user.setTarget(updateDto.getTarget());
-        if (updateDto.getTopic() != null) {
+        if (updateDto.getCategory() != null) {
+            List<UserTopic> userTopics = new ArrayList<>();
             userTopicRepository.deleteAll(topics);
 
-            List<UserTopic> userTopics = new ArrayList<>();
-            for (TopicName topic : updateDto.getTopic()) {
-                Topic T = topicRepository.findByTopicName(topic).get();
+            for (Category topic : updateDto.getCategory()) {
+                Topic T = topicRepository.findByCategory(topic).get();
                 UserTopic userTopic = new UserTopic();
                 userTopic.setTopic(T);
                 userTopic.setUser(user);
                 userTopics.add(userTopic);
             }
-            if (userTopics.size()!=0) {
-                userTopics = userTopicRepository.saveAll(userTopics);
-            }
 
-            for (UserTopic userTopic: userTopics) {
-                topicNames.add(userTopic.getTopic().getTopicName());
-            }
-        } else {
-            for (UserTopic userTopic: topics) {
-                topicNames.add(userTopic.getTopic().getTopicName());
+            if (userTopics.size()!=0) {
+                userTopicRepository.saveAll(userTopics);
             }
         }
+        return basicEntityService.getUserDto(user);
+    }
+
+    public UserDto updateUserProfile(String email, UserProfileUpdateDto updateDto, MultipartFile userImage) {
+        User user = basicEntityService.getUserByEmail(email);
+        UserImage savedImage = userImageRepository.findByUser(user).get();
+
+        if (updateDto.getNickname() != null) user.setNickname(updateDto.getNickname());
+        if (updateDto.getEmail() != null) user.setEmail(updateDto.getEmail());
         if (userImage != null ) {
             if (!savedImage.getName().equals(PROFILE_DEFAULT_IMAGE))
                 deleteImage(savedImage.getName());
@@ -260,7 +249,15 @@ public class UserService {
             savedImage.setPath(newImage.getPath());
         }
 
-        return getUserDto(user, topicNames, savedImage);
+        if (updateDto.getEx_password() != null && updateDto.getNew_password1() != null && updateDto.getNew_password2() != null) {
+            if (!updateDto.getNew_password1().equals(updateDto.getNew_password2()))
+                throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            if (!passwordEncoder.matches(updateDto.getEx_password(), user.getPassword()))
+                throw new RuntimeException("비밀번호를 확인해주세요.");
+            user.setPassword(passwordEncoder.encode(updateDto.getNew_password1()));
+        }
+
+        return basicEntityService.getUserDto(user);
     }
 
     private void deleteImage(String name) {
@@ -271,8 +268,7 @@ public class UserService {
     }
 
     public void findPassword(String email, String name, String birth) {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
+        User user = basicEntityService.getUserByEmail(email);
 
         if (!user.getName().equals(name)) throw new BadCredentialsException("가입된 이름과 일치하지 않습니다.");
         if (!user.getBirth().toString().equals(birth)) throw new BadCredentialsException("가입된 생년월일과 일치하지 않습니다.");
@@ -311,11 +307,22 @@ public class UserService {
         if (!passwordDto.getNewPassword1().equals(passwordDto.getNewPassword2()))
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
 
-        User user = userRepository.findByEmail(email).get();
+        User user = basicEntityService.getUserByEmail(email);
 
         if (!passwordEncoder.matches(passwordDto.getExPassword(), user.getPassword()))
             throw new RuntimeException("비밀번호를 확인해주세요.");
 
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword1()));
+    }
+
+    public UserDashBoardDto userDashboard(String email) {
+        UserDashBoardDto dashBoardDto = new UserDashBoardDto();
+
+        User user = basicEntityService.getUserByEmail(email);
+        dashBoardDto.setUser(basicEntityService.getUserDto(user));
+        dashBoardDto.setUser_sentences(sentenceService.getUserSentences(email));
+        dashBoardDto.setLearning_logs(sentenceService.getUserLogs(email));
+
+        return dashBoardDto;
     }
 }

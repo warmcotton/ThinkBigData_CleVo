@@ -1,8 +1,7 @@
 package com.thinkbigdata.clevo.repository;
 
 import com.thinkbigdata.clevo.entity.Topic;
-import com.thinkbigdata.clevo.topic.TopicName;
-import org.hibernate.exception.ConstraintViolationException;
+import com.thinkbigdata.clevo.enums.Category;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
@@ -29,25 +28,25 @@ class TopicRepositoryTest {
     @Test
     void save() {
         Topic topic = new Topic();
-        topic.setTopicName(TopicName.TOPIC2);
+        topic.setCategory(Category.TOPIC2);
 
         Topic savedTopic = topicRepository.save(topic);
         testEntityManager.flush();
 
         System.out.println(savedTopic.getId());
-        System.out.println(savedTopic.getTopicName());
+        System.out.println(savedTopic.getCategory());
         assertNotNull(savedTopic);
-        assertTrue(topic.getTopicName().equals(savedTopic.getTopicName()));
+        assertTrue(topic.getCategory().equals(savedTopic.getCategory()));
     }
 
     @Test
     void save_duplicate_topic_name() {
         Topic topic = new Topic();
-        topic.setTopicName(TopicName.TOPIC1);
+        topic.setCategory(Category.TOPIC1);
         topicRepository.save(topic);
 
         Topic newtopic = new Topic();
-        newtopic.setTopicName(TopicName.TOPIC1);
+        newtopic.setCategory(Category.TOPIC1);
         assertThrows(DataIntegrityViolationException.class, () -> {
             topicRepository.save(newtopic);
         });

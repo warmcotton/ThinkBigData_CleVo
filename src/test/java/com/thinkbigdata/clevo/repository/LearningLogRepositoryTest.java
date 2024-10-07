@@ -1,15 +1,14 @@
 package com.thinkbigdata.clevo.repository;
 
 import com.thinkbigdata.clevo.entity.*;
-import com.thinkbigdata.clevo.role.Role;
-import com.thinkbigdata.clevo.topic.TopicName;
+import com.thinkbigdata.clevo.enums.Role;
+import com.thinkbigdata.clevo.enums.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,17 +46,16 @@ class LearningLogRepositoryTest {
     }
 
     void saveTopics() {
-        for (TopicName topicName: TopicName.values()) {
+        for (Category category : Category.values()) {
             Topic topic = new Topic();
-            topic.setTopicName(topicName);
+            topic.setCategory(category);
             topicRepository.save(topic);
         }
         testEntityManager.flush();
     }
     void saveSentence() {
-        Topic topic = topicRepository.findByTopicName(TopicName.TOPIC1).get();
+        Topic topic = topicRepository.findByCategory(Category.TOPIC1).get();
         Sentence sentence = new Sentence();
-        sentence.setTopic(topic);
         sentence.setEng("test Sentence");
         sentence.setKor("테스트 문장");
         sentence.setLevel(10);
@@ -78,9 +76,9 @@ class LearningLogRepositoryTest {
         LearningLog learningLog = new LearningLog();
         learningLog.setUser(user.get());
         learningLog.setSentence(sentence.get());
-        learningLog.setClarity(5.0F);
-        learningLog.setFluency(3.0F);
-        learningLog.setTotalScore(8.0F);
+        learningLog.setAccuracy(5.0);
+        learningLog.setFluency(3.0);
+        learningLog.setTotalScore(8.0);
         LearningLog savedLog = learningLogRepository.save(learningLog);
 
         System.out.println(savedLog.getUser().getEmail());

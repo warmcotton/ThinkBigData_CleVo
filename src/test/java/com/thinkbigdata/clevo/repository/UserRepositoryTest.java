@@ -4,8 +4,8 @@ import com.thinkbigdata.clevo.entity.Topic;
 import com.thinkbigdata.clevo.entity.User;
 import com.thinkbigdata.clevo.entity.UserImage;
 import com.thinkbigdata.clevo.entity.UserTopic;
-import com.thinkbigdata.clevo.role.Role;
-import com.thinkbigdata.clevo.topic.TopicName;
+import com.thinkbigdata.clevo.enums.Role;
+import com.thinkbigdata.clevo.enums.Category;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +39,9 @@ public class UserRepositoryTest {
     @Autowired
     TestEntityManager testEntityManager;
     void saveTopics() {
-        for (TopicName topicName: TopicName.values()) {
+        for (Category category : Category.values()) {
             Topic topic = new Topic();
-            topic.setTopicName(topicName);
+            topic.setCategory(category);
             topicRepository.save(topic);
         }
     }
@@ -115,8 +114,8 @@ public class UserRepositoryTest {
         User savedUser = userRepository.save(user);
         testEntityManager.flush();
 
-        Topic topic1 = topicRepository.findByTopicName(TopicName.TOPIC1).get();
-        Topic topic2 = topicRepository.findByTopicName(TopicName.TOPIC2).get();
+        Topic topic1 = topicRepository.findByCategory(Category.TOPIC1).get();
+        Topic topic2 = topicRepository.findByCategory(Category.TOPIC2).get();
 
         UserTopic userTopic1 = new UserTopic();
         userTopic1.setUser(savedUser);
