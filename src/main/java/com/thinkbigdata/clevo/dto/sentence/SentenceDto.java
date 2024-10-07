@@ -1,15 +1,14 @@
 package com.thinkbigdata.clevo.dto.sentence;
 
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Category;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
-@Getter @Setter
+@Getter @Setter @Builder
 public class SentenceDto {
     private Integer id;
     @NotBlank

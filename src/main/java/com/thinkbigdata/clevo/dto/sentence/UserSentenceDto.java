@@ -11,8 +11,6 @@ import java.time.LocalDateTime;
 @Builder @Getter @Setter
 public class UserSentenceDto {
     @NotNull @Min(value = 1)
-    private Integer id;
-    @NotNull @Min(value = 1)
     private Integer sentence_id;
     @NotBlank
     private String base64;
@@ -20,7 +18,4 @@ public class UserSentenceDto {
     private Double accuracy;
     private Double fluency;
     private Double total_score;
-    private LocalDateTime created_date;
-    private LocalDateTime modified_date;
-
 }

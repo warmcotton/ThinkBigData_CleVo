@@ -1,4 +1,4 @@
-package com.thinkbigdata.clevo.role;
+package com.thinkbigdata.clevo.enums;
 
 public enum Role {
     USER, ADMIN

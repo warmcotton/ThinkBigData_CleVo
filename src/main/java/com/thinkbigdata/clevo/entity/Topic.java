@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Category;
 @Entity
 @Table(name = "Topics")
 @Getter @Setter

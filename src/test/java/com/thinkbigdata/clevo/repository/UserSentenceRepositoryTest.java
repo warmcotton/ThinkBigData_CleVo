@@ -1,8 +1,8 @@
 package com.thinkbigdata.clevo.repository;
 
 import com.thinkbigdata.clevo.entity.*;
-import com.thinkbigdata.clevo.role.Role;
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Role;
+import com.thinkbigdata.clevo.enums.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -100,7 +100,7 @@ class UserSentenceRepositoryTest {
         userSentence.setAccuracy(5.0);
         userSentence.setFluency(3.0);
         userSentence.setTotalScore(8.0);
-        userSentenceRepository.save(userSentence);
+        userSentenceRepository.saveAndFlush(userSentence);
 
         userSentence.setAccuracy(4.0);
         userSentenceRepository.saveAndFlush(userSentence);

@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserSentenceRepository extends JpaRepository<UserSentence, Integer> {
-    Optional<UserSentence> findBySentence(Sentence sentence);
-
     List<UserSentence> findByUser(User user);
+    Optional<UserSentence> findByUserAndSentence(User user, Sentence sentence);
 }

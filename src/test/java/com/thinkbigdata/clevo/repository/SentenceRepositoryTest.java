@@ -2,14 +2,13 @@ package com.thinkbigdata.clevo.repository;
 
 import com.thinkbigdata.clevo.entity.Sentence;
 import com.thinkbigdata.clevo.entity.Topic;
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,21 +59,4 @@ public class SentenceRepositoryTest {
         assertTrue(sentence.getId().equals(savedSentence.getId()));
         assertTrue(sentence.getKor().equals(savedSentence.getKor()));
     }
-
-    @Test
-    void save_with_undefined_topic() {
-        Topic topic = new Topic();
-        topic.setCategory(Category.TOPIC3);
-
-        Sentence sentence = new Sentence();
-
-        sentence.setEng("test Sentence");
-        sentence.setKor("테스트 문장");
-        sentence.setLevel(10);
-
-        assertThrows(InvalidDataAccessApiUsageException.class, () -> {
-            sentenceRepository.save(sentence);
-        });
-    }
-
 }

@@ -1,7 +1,7 @@
 package com.thinkbigdata.clevo.dto.user;
 
-import com.thinkbigdata.clevo.role.Role;
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Role;
+import com.thinkbigdata.clevo.enums.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

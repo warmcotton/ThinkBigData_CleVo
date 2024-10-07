@@ -1,6 +1,6 @@
 package com.thinkbigdata.clevo.dto.user;
 
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Category;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;

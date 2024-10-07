@@ -1,8 +1,8 @@
 package com.thinkbigdata.clevo.repository;
 
 import com.thinkbigdata.clevo.entity.*;
-import com.thinkbigdata.clevo.role.Role;
-import com.thinkbigdata.clevo.category.Category;
+import com.thinkbigdata.clevo.enums.Role;
+import com.thinkbigdata.clevo.enums.Category;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
