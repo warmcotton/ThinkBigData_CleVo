@@ -36,7 +36,13 @@ public class SentenceService {
 
         for (UserSentence userSentence : userSentenceList) {
             SentenceDto sentenceDto = basicEntityService.getSentenceDto(userSentence.getSentence());
-            userSentences.add(basicEntityService.getUserSentenceDto(userSentence, sentenceDto));
+            List<LearningLog> logList = learningLogRepository.findBySentence(userSentence.getSentence());
+            List<LearningLogDto> logDtoList = new ArrayList<>();
+            for (LearningLog learningLog : logList) {
+                LearningLogDto learningLogDto = basicEntityService.getLearningLogDto(learningLog, sentenceDto);
+                logDtoList.add(learningLogDto);
+            }
+            userSentences.add(basicEntityService.getUserSentenceDto(userSentence, sentenceDto, logDtoList));
         }
         return userSentences;
     }
@@ -65,7 +71,7 @@ public class SentenceService {
         }
     }
 
-    public void addUserSentence(String email, Integer sentenceId, Double accuracy, Double fluency, Double totalScore) {
+    public void addUserSentence(String email, Integer sentenceId) {
         User user = basicEntityService.getUserByEmail(email);
         Sentence sentence = basicEntityService.getSentence(sentenceId);
 
@@ -73,9 +79,6 @@ public class SentenceService {
             UserSentence userSentence = new UserSentence();
             userSentence.setUser(user);
             userSentence.setSentence(sentence);
-            userSentence.setAccuracy(accuracy);
-            userSentence.setFluency(fluency);
-            userSentence.setTotalScore(totalScore);
             userSentenceRepository.save(userSentence);
         } else {
             throw new EntityExistsException("이미 추가 되었습니다.");

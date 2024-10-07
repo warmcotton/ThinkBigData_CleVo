@@ -21,14 +21,4 @@ public class UserSentence {
     private User user;
     @JoinColumn(name = "Sentence_id", nullable = false) @ManyToOne(fetch = FetchType.LAZY)
     private Sentence sentence;
-    @Column(name = "User_Sentence_accuracy", nullable = false)
-    private Double accuracy;
-    @Column(name = "User_Sentence_fluency", nullable = false)
-    private Double fluency;
-    @Column(name = "User_Sentence_total_score", nullable = false)
-    private Double totalScore;
-    @CreatedDate @Column(name = "User_Sentence_createdDate", nullable = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdDate;
-    @LastModifiedDate @Column(name = "User_Sentence_modifiedDate") @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime modifiedDate;
 }

@@ -82,8 +82,8 @@ public class BasicEntityService {
                 new NoSuchElementException("문장 정보가 없습니다."));
     }
 
-    public UserSentenceDto getUserSentenceDto(UserSentence userSentence, SentenceDto sentenceDto) {
-        return UserSentenceDto.builder().sentence_id(userSentence.getSentence().getId()).sentence(sentenceDto)
-                .accuracy(userSentence.getAccuracy()).fluency(userSentence.getFluency()).total_score(userSentence.getTotalScore()).build();
+    public UserSentenceDto getUserSentenceDto(UserSentence userSentence, SentenceDto sentenceDto, List<LearningLogDto> logs) {
+        return UserSentenceDto.builder().sentence_id(userSentence.getSentence().getId()).sentence(sentenceDto).
+                logs(logs).build();
     }
 }

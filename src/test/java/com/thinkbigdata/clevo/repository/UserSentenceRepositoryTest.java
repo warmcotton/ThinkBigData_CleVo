@@ -77,36 +77,10 @@ class UserSentenceRepositoryTest {
         UserSentence userSentence = new UserSentence();
         userSentence.setUser(user.get());
         userSentence.setSentence(sentence.get());
-        userSentence.setAccuracy(5.0);
-        userSentence.setFluency(3.0);
-        userSentence.setTotalScore(8.0);
         userSentenceRepository.save(userSentence);
 
         System.out.println(userSentence.getUser().getEmail());
         System.out.println(userSentence.getSentence().getEng());
-        System.out.println(userSentence.getCreatedDate());
-        System.out.println(userSentence.getModifiedDate());
         assertNotNull(userSentence);
-    }
-
-    @Test
-    void save_and_modify() {
-        Optional<User> user = userRepository.findByEmail("test@test.com");
-        Optional<Sentence> sentence = sentenceRepository.findByEng("test Sentence");
-
-        UserSentence userSentence = new UserSentence();
-        userSentence.setUser(user.get());
-        userSentence.setSentence(sentence.get());
-        userSentence.setAccuracy(5.0);
-        userSentence.setFluency(3.0);
-        userSentence.setTotalScore(8.0);
-        userSentenceRepository.saveAndFlush(userSentence);
-
-        userSentence.setAccuracy(4.0);
-        userSentenceRepository.saveAndFlush(userSentence);
-
-        System.out.println(userSentence.getCreatedDate());
-        System.out.println(userSentence.getModifiedDate());
-        assertNotEquals(Timestamp.valueOf(userSentence.getCreatedDate()).getTime(), Timestamp.valueOf(userSentence.getModifiedDate()).getTime());
     }
 }

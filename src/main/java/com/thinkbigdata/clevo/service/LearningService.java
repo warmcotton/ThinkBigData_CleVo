@@ -32,7 +32,7 @@ public class LearningService {
         double fcr = (((int) (Math.random() * 11) - 5) / 10.0);
         double accuracy = score + acr > 5.0 ? 5.0 : (score + acr < 1.0 ? 1.0 : score + acr);
         double fluency = score + fcr > 5.0 ? 5.0 : (score + fcr < 1.0 ? 1.0 : score + fcr);
-        double totalScore = accuracy + fluency / 2.0;
+        double totalScore = (accuracy + fluency) / 2.0;
 
         Optional<Sentence> optst = sentenceRepository.findByEng(sentence.getEng());
         Sentence st = null;
@@ -73,11 +73,7 @@ public class LearningService {
         double fcr = (((int) (Math.random() * 11) - 5) / 10.0);
         double accuracy = score + acr > 5.0 ? 5.0 : (score + acr < 1.0 ? 1.0 : score + acr);
         double fluency = score + fcr > 5.0 ? 5.0 : (score + fcr < 1.0 ? 1.0 : score + fcr);
-        double totalScore = accuracy + fluency / 2.0;
-
-        userSentence.setFluency(score);
-        userSentence.setAccuracy(score);
-        userSentence.setTotalScore(score);
+        double totalScore = (accuracy + fluency) / 2.0;
 
         LearningLog log = LearningLog.builder().user(user).sentence(sentence).accuracy(accuracy).fluency(fluency).totalScore(totalScore).build();
         learningLogRepository.save(log);
