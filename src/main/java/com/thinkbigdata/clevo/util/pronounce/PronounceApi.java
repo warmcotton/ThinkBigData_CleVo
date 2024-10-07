@@ -23,19 +23,6 @@ public class PronounceApi {
     @Value("${api.path}") private String PATH;
     @Value("${api.key}") private String accessKey;
 
-    public String requestToServer(ObjectNode request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", accessKey);
-
-        HttpEntity<JsonNode> requestEntity = new HttpEntity<>(request, headers);
-
-        ResponseEntity<String> result = restTemplate.exchange(PATH, HttpMethod.POST, requestEntity, String.class);
-
-        return result.getBody();
-    }
-
     public Double getSentenceScore(String eng, String base64) {
         ObjectNode requests = JsonNodeFactory.instance.objectNode();
         ObjectNode arguments = JsonNodeFactory.instance.objectNode();

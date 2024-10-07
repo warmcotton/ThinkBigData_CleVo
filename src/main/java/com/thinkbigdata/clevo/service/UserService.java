@@ -64,7 +64,7 @@ public class UserService {
         if (!registerDto.getPassword2().equals(registerDto.getPassword1()))
             throw new RuntimeException("비밀번호가 일치하지 않습니다.");
 
-        User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickName())
+        User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickname())
                 .birth(registerDto.getBirth()).gender(registerDto.getGender())
                 .build();
         user.setPassword(passwordEncoder.encode(registerDto.getPassword1()));
@@ -222,6 +222,22 @@ public class UserService {
         return getUserDto(user, categories, userImage);
     }
 
+    // target 수정
+    public UserDto updateTarget(String email, Integer target) {
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
+        UserImage savedImage = userImageRepository.findByUser(user).get();
+        List<UserTopic> topics = userTopicRepository.findByUser(user);
+        List<Category> categories = new ArrayList<>();
+
+        user.setTarget(target);
+        for (UserTopic userTopic: topics) {
+            categories.add(userTopic.getTopic().getCategory());
+        }
+
+        return getUserDto(user, categories, savedImage);
+    }
+
     // level category 수정
     public UserDto updateUserInfo(String email, UserInfoUpdateDto updateDto) {
         User user = userRepository.findByEmail(email).orElseThrow(() ->
@@ -232,7 +248,6 @@ public class UserService {
 
         if (updateDto.getNickname() != null) user.setNickname(updateDto.getNickname());
         if (updateDto.getLevel() != null) user.setLevel(updateDto.getLevel());
-//        if (updateDto.getTarget() != null) user.setTarget(updateDto.getTarget());
         if (updateDto.getCategory() != null) {
             userTopicRepository.deleteAll(topics);
 
@@ -256,14 +271,6 @@ public class UserService {
                 categories.add(userTopic.getTopic().getCategory());
             }
         }
-//        if (userImage != null ) {
-//            if (!savedImage.getName().equals(PROFILE_DEFAULT_IMAGE))
-//                deleteImage(savedImage.getName());
-//            UserImage newImage = saveImage(userImage);
-//            savedImage.setName(newImage.getName());
-//            savedImage.setOriginName(newImage.getOriginName());
-//            savedImage.setPath(newImage.getPath());
-//        }
 
         return getUserDto(user, categories, savedImage);
     }

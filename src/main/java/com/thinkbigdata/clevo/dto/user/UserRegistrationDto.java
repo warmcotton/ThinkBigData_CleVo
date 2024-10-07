@@ -21,7 +21,7 @@ public class UserRegistrationDto {
     private String name;
     @NotBlank(message = "닉네임을 입력하세요.")
     @Pattern(regexp = "^[ㄱ-ㅎ가-힣a-z0-9-_]{2,10}$", message = "올바른 닉네임을 입력하세요.(특수문자를 제외한 2~10자리 닉네임)")
-    private String nickName;
+    private String nickname;
     @NotNull(message = "생년월일을 입력하세요.")
     private LocalDate birth;
     @NotBlank(message = "성별을 입력하세요.")
