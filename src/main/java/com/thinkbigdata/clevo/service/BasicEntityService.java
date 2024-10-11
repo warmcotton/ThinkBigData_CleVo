@@ -7,6 +7,7 @@ import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.dto.user.UserDto;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -47,7 +48,7 @@ public class BasicEntityService {
 
     public Sentence getSentence(Integer sentenceId) {
         return sentenceRepository.findById(sentenceId).orElseThrow(() ->
-                new NoSuchElementException("문장 정보가 없습니다."));
+                new EntityNotFoundException("해당하는 문장 정보가 없습니다."));
     }
 
     public SentenceDto getSentenceDto(Sentence sentence) {
@@ -62,7 +63,7 @@ public class BasicEntityService {
 
     public LearningLog getLearningLog(Integer logId) {
         return learningLogRepository.findById(logId).orElseThrow(() ->
-                new NoSuchElementException("로그 정보가 없습니다."));
+                new EntityNotFoundException("해당하는 로그 정보가 없습니다."));
     }
 
     public LearningLogDto getLearningLogDto(LearningLog learningLog, SentenceDto sentenceDto) {
@@ -74,12 +75,12 @@ public class BasicEntityService {
 
     public UserSentence getUserSentence(Integer id) {
         return userSentenceRepository.findById(id).orElseThrow(() ->
-                new NoSuchElementException("문장 정보가 없습니다."));
+                new EntityNotFoundException("해당하는 사용자의 문장 정보가 없습니다."));
     }
 
     public UserSentence getUserSentence(User user, Sentence sentence) {
         return userSentenceRepository.findByUserAndSentence(user, sentence).orElseThrow(() ->
-                new NoSuchElementException("문장 정보가 없습니다."));
+                new EntityNotFoundException("해당하는 사용자의 문장 정보가 없습니다."));
     }
 
     public UserSentenceDto getUserSentenceDto(UserSentence userSentence, SentenceDto sentenceDto, List<LearningLogDto> logs) {

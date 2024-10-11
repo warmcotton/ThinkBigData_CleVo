@@ -1,9 +1,11 @@
 package com.thinkbigdata.clevo.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thinkbigdata.clevo.dto.sentence.LearningLogDto;
 import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
 import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.entity.*;
+import com.thinkbigdata.clevo.exception.InsufficientUserInfoException;
 import com.thinkbigdata.clevo.repository.*;
 import com.thinkbigdata.clevo.util.pronounce.PronounceApi;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +26,10 @@ public class LearningService {
     private final UserTopicRepository userTopicRepository;
     private final PronounceApi pronounceApi;
 
-    public LearningLogDto getRandomSentenceResult(String email, SentenceDto sentence) {
+    public LearningLogDto getRandomSentenceResult(String email, SentenceDto sentence) throws JsonProcessingException, InsufficientUserInfoException {
         User user = basicEntityService.getUserByEmail(email);
+        // user info 예외처리
+        if (userTopicRepository.findByUser(user).size() == 0 || user.getLevel() == null) throw new InsufficientUserInfoException("학습을 위해 필요한 사용자 정보가 부족합니다");
 
         double score = pronounceApi.getSentenceScore(sentence.getEng(), sentence.getBase64());
         double acr = (((int) (Math.random() * 11) - 5) / 10.0);
@@ -63,8 +67,11 @@ public class LearningService {
         return basicEntityService.getLearningLogDto(log, basicEntityService.getSentenceDto(st));
     }
 
-    public LearningLogDto getUserSentenceResult(String email, UserSentenceDto userSentenceDto) {
+    public LearningLogDto getUserSentenceResult(String email, UserSentenceDto userSentenceDto) throws JsonProcessingException, InsufficientUserInfoException {
         User user = basicEntityService.getUserByEmail(email);
+        // user info 예외처리
+        if (userTopicRepository.findByUser(user).size() == 0 || user.getLevel() == null) throw new InsufficientUserInfoException("학습을 위해 필요한 사용자 정보가 부족합니다");
+
         Sentence sentence = basicEntityService.getSentence(userSentenceDto.getSentence_id());
         UserSentence userSentence = basicEntityService.getUserSentence(user, sentence);
 

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Getter @Setter
 public class UserRegistrationDto {
     @NotBlank(message = "이메일을 입력하세요.")
-    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+.[A-Za-z]{2,6}$", message = "올바른 이메일을 입력하세요.")
+    @Pattern(regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$", message = "올바른 이메일을 입력하세요.")
     private String email;
     @NotBlank(message = "비밀번호를 입력하세요.")
     @Pattern(regexp = "(?=.*[0-9])(?=.*[a-zA-Z])(?=.*\\W)(?=\\S+$).{8,16}", message = "올바른 비밀번호를 입력하세요.(대 소문자, 숫자, 특수문자 포함 8-16자리)")

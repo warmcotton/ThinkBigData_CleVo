@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
@@ -23,7 +24,7 @@ public class PronounceApi {
     @Value("${api.path}") private String PATH;
     @Value("${api.key}") private String accessKey;
 
-    public Double getSentenceScore(String eng, String base64) {
+    public Double getSentenceScore(String eng, String base64) throws JsonProcessingException {
         ObjectNode requests = JsonNodeFactory.instance.objectNode();
         ObjectNode arguments = JsonNodeFactory.instance.objectNode();
 
@@ -44,14 +45,10 @@ public class PronounceApi {
         Map<String, Object> res = null;
 
         ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            res = objectMapper.readValue(result, Map.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
-        }
+        res = objectMapper.readValue(result, Map.class);
 
         if ((Integer) res.get("result") == -1 )
-            throw new RuntimeException("API 호출 결과가 유효하지 않습니다.");
+            throw new RestClientException("API 호출 결과가 유효하지 않습니다.");
 
         Map<String, String> value = (Map<String, String>) res.get("return_object");
 
