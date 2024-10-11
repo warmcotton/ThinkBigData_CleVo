@@ -1,6 +1,7 @@
 package com.thinkbigdata.clevo.controller;
 
 import com.thinkbigdata.clevo.dto.sentence.LearningLogDto;
+import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
 import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.entity.Sentence;
 import com.thinkbigdata.clevo.service.SentenceService;
@@ -18,11 +19,11 @@ public class SentenceController {
     private final SentenceService sentenceService;
 
     @GetMapping("/sentence/{sentence_id}")
-    public ResponseEntity<Sentence> getSentenceById(@PathVariable("sentence_id") Integer sentenceId) {
+    public ResponseEntity<SentenceDto> getSentenceById(@PathVariable("sentence_id") Integer sentenceId) {
         if (sentenceId == null || sentenceId <= 0)
-            throw new RuntimeException("bad request");
+            throw new IllegalArgumentException("sentence_id 정보가 유효하지 않습니다.");
 
-        Sentence sentence = sentenceService.getSentenceById(sentenceId);
+        SentenceDto sentence = sentenceService.getSentenceById(sentenceId);
         return ResponseEntity.ok(sentence);
     }
 
@@ -40,8 +41,8 @@ public class SentenceController {
 
     @PostMapping("/sentence/user")
     public ResponseEntity<?> addToUserSentence(Authentication authentication, @RequestBody Map<String, String> sentenceInfo) {
-        if (!sentenceInfo.containsKey("sentence_id")) throw new RuntimeException("bad request");
-        if (sentenceInfo.get("sentence_id") == null) throw new RuntimeException("bad request");
+        if (!sentenceInfo.containsKey("sentence_id")) throw new IllegalArgumentException("sentence_id 정보가 유효하지 않습니다.");
+        if (sentenceInfo.get("sentence_id") == null) throw new IllegalArgumentException("sentence_id 정보가 유효하지 않습니다.");
 
         sentenceService.addUserSentence(authentication.getName(), Integer.valueOf(sentenceInfo.get("sentence_id")));
 

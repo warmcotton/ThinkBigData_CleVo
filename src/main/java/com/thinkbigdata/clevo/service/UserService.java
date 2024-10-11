@@ -3,6 +3,9 @@ package com.thinkbigdata.clevo.service;
 import com.thinkbigdata.clevo.dto.*;
 import com.thinkbigdata.clevo.dto.user.*;
 import com.thinkbigdata.clevo.entity.*;
+import com.thinkbigdata.clevo.exception.DuplicateEmailException;
+import com.thinkbigdata.clevo.exception.InvalidSessionException;
+import com.thinkbigdata.clevo.exception.RefreshTokenException;
 import com.thinkbigdata.clevo.repository.*;
 import com.thinkbigdata.clevo.enums.Category;
 import com.thinkbigdata.clevo.util.email.EmailSender;
@@ -36,6 +39,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class UserService {
     private final BasicEntityService basicEntityService;
+    private final IoService ioService;
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final UserTopicRepository userTopicRepository;
@@ -61,9 +65,9 @@ public class UserService {
         this.key = Keys.hmacShaKeyFor(bytes);
     }
 
-    public UserDto registerUser(UserRegistrationDto registerDto, String sessionId) {
-        if (!registerDto.getPassword2().equals(registerDto.getPassword1()))
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+    public UserDto registerUser(UserRegistrationDto registerDto, String sessionId) throws DuplicateEmailException {
+        // 중복이메일 예외 처리
+        if (userRepository.findByEmail(registerDto.getEmail()).isPresent()) throw new DuplicateEmailException("이미 등록된 이메일입니다.");
 
         User user = User.builder().email(registerDto.getEmail()).name(registerDto.getName()).nickname(registerDto.getNickname())
                 .birth(registerDto.getBirth()).gender(registerDto.getGender())
@@ -79,9 +83,9 @@ public class UserService {
         return basicEntityService.getUserDto(savedUser);
     }
 
-    public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) {
+    public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) throws InvalidSessionException {
         if (redisTemplate.opsForValue().get("sessionId:"+sessionId) == null) {
-            throw new RuntimeException("세션 정보 불일치");
+            throw new InvalidSessionException("해당하는 세션 정보가 없습니다.");
         }
         String email = redisTemplate.opsForValue().get("sessionId:"+sessionId);
 
@@ -109,31 +113,10 @@ public class UserService {
         return basicEntityService.getUserDto(user);
     }
 
-    private UserImage saveImage(MultipartFile imageFile) {
-        String originName = imageFile.getOriginalFilename();
-        String extension = originName.substring(originName.lastIndexOf("."));
-        String savedFileName = UUID.randomUUID() + extension;
-        String path = "/images/clevo/"+savedFileName;
-
-        try {
-            FileOutputStream fos = new FileOutputStream(imgLocation+"/"+savedFileName);
-            fos.write(imageFile.getBytes());
-            fos.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        UserImage userImage = new UserImage();
-        userImage.setName(savedFileName);
-        userImage.setOriginName(originName);
-        userImage.setPath(path);
-        return userImage;
-    }
-
     private UserImage saveDefaultImage() {
         String originName = PROFILE_DEFAULT_IMAGE;
         String savedFileName = PROFILE_DEFAULT_IMAGE;
-        String path = "/images/clevo/"+ PROFILE_DEFAULT_IMAGE;
+        String path = "/images/user/profile/"+ PROFILE_DEFAULT_IMAGE;
 
         UserImage userImage = new UserImage();
         userImage.setName(savedFileName);
@@ -153,7 +136,7 @@ public class UserService {
         User user = basicEntityService.getUserByEmail(email);
 
         if (!passwordEncoder.matches(password, user.getPassword()))
-            throw new RuntimeException("비밀번호를 확인해주세요.");
+            throw new BadCredentialsException("비밀번호를 확인해주세요.");
 
         TokenDto token = tokenGenerateValidator.generateToken(user);
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByEmail(user.getEmail());
@@ -178,13 +161,13 @@ public class UserService {
         redisTemplate.opsForValue().set("logout:"+token,email,accessExpired,TimeUnit.MILLISECONDS);
     }
 
-    public TokenDto refreshToken(String requestToken) {
+    public TokenDto refreshToken(String requestToken) throws RefreshTokenException {
         RefreshToken refreshToken = refreshTokenRepository.findByValue(requestToken).orElseThrow(() ->
-                new RuntimeException("토큰 정보 없음"));
+                new RefreshTokenException("토큰 정보 없음"));
 
         if (LocalDateTime.now().isAfter(refreshToken.getExpiredDate())) {
             refreshTokenRepository.delete(refreshToken);
-            throw new RuntimeException("토큰 정보 만료");
+            throw new RefreshTokenException("토큰 정보 만료");
         }
 
         User user = basicEntityService.getUserByEmail(refreshToken.getEmail());
@@ -210,8 +193,7 @@ public class UserService {
 
     // level category 수정
     public UserDto updateUserInfo(String email, UserInfoUpdateDto updateDto) {
-        User user = userRepository.findByEmail(email).orElseThrow(() ->
-                new UsernameNotFoundException("가입된 이메일 정보가 없습니다."));
+        User user = basicEntityService.getUserByEmail(email);
         List<UserTopic> topics = userTopicRepository.findByUser(user);
 
         if (updateDto.getLevel() != null) user.setLevel(updateDto.getLevel());
@@ -234,27 +216,30 @@ public class UserService {
         return basicEntityService.getUserDto(user);
     }
 
-    public UserDto updateUserProfile(String email, UserProfileUpdateDto updateDto, MultipartFile userImage) {
+    public UserDto updateUserProfile(String email, UserProfileUpdateDto updateDto, MultipartFile userImage) throws IOException {
         User user = basicEntityService.getUserByEmail(email);
         UserImage savedImage = userImageRepository.findByUser(user).get();
 
-        if (updateDto.getNickname() != null) user.setNickname(updateDto.getNickname());
-        if (updateDto.getEmail() != null) user.setEmail(updateDto.getEmail());
+        if (updateDto != null) {
+            if (updateDto.getNickname() != null) user.setNickname(updateDto.getNickname());
+            if (updateDto.getEmail() != null) user.setEmail(updateDto.getEmail());
+
+            if (updateDto.getEx_password() != null && updateDto.getNew_password1() != null && updateDto.getNew_password2() != null) {
+                if (!updateDto.getNew_password1().equals(updateDto.getNew_password2()))
+                    throw new IllegalArgumentException("등록할 비밀번호가 일치하지 않습니다.");
+                if (!passwordEncoder.matches(updateDto.getEx_password(), user.getPassword()))
+                    throw new BadCredentialsException("비밀번호를 확인해주세요.");
+                user.setPassword(passwordEncoder.encode(updateDto.getNew_password1()));
+            }
+        }
+
         if (userImage != null ) {
             if (!savedImage.getName().equals(PROFILE_DEFAULT_IMAGE))
                 deleteImage(savedImage.getName());
-            UserImage newImage = saveImage(userImage);
+            UserImage newImage = ioService.saveImage(userImage);
             savedImage.setName(newImage.getName());
             savedImage.setOriginName(newImage.getOriginName());
             savedImage.setPath(newImage.getPath());
-        }
-
-        if (updateDto.getEx_password() != null && updateDto.getNew_password1() != null && updateDto.getNew_password2() != null) {
-            if (!updateDto.getNew_password1().equals(updateDto.getNew_password2()))
-                throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-            if (!passwordEncoder.matches(updateDto.getEx_password(), user.getPassword()))
-                throw new RuntimeException("비밀번호를 확인해주세요.");
-            user.setPassword(passwordEncoder.encode(updateDto.getNew_password1()));
         }
 
         return basicEntityService.getUserDto(user);
@@ -305,12 +290,12 @@ public class UserService {
 
     public void updatePassword(String email, PasswordUpdateDto passwordDto) {
         if (!passwordDto.getNewPassword1().equals(passwordDto.getNewPassword2()))
-            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 
         User user = basicEntityService.getUserByEmail(email);
 
         if (!passwordEncoder.matches(passwordDto.getExPassword(), user.getPassword()))
-            throw new RuntimeException("비밀번호를 확인해주세요.");
+            throw new BadCredentialsException("비밀번호를 확인해주세요.");
 
         user.setPassword(passwordEncoder.encode(passwordDto.getNewPassword1()));
     }

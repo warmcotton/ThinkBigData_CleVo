@@ -6,6 +6,7 @@ import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.repository.*;
 import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,9 +24,8 @@ public class SentenceService {
     private final LearningLogRepository learningLogRepository;
     private final UserSentenceRepository userSentenceRepository;
 
-    public Sentence getSentenceById(Integer sentenceId) {
-        return sentenceRepository.findById(sentenceId).orElseThrow(() ->
-                new NoSuchElementException("문장 정보가 없습니다."));
+    public SentenceDto getSentenceById(Integer sentenceId) {
+        return basicEntityService.getSentenceDto(basicEntityService.getSentence(sentenceId));
     }
 
     public List<UserSentenceDto> getUserSentences(String email) {
@@ -67,7 +67,7 @@ public class SentenceService {
             UserSentence userSentence = userSentenceRepository.findByUserAndSentence(user, sentence).get();
             userSentenceRepository.delete(userSentence);
         } else {
-            throw new NoSuchElementException("문장 정보가 없습니다.");
+            throw new EntityNotFoundException("해당하는 사용자의 문장이 없습니다.");
         }
     }
 
@@ -81,7 +81,7 @@ public class SentenceService {
             userSentence.setSentence(sentence);
             userSentenceRepository.save(userSentence);
         } else {
-            throw new EntityExistsException("이미 추가 되었습니다.");
+            throw new EntityExistsException("해당하는 사용자의 문장이 이미 있습니다.");
         }
     }
 }

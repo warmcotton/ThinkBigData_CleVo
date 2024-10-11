@@ -33,8 +33,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 tokenGenerateValidator.validateToken(accessToken);
             } catch (MalformedJwtException | IllegalArgumentException | UnsupportedJwtException | SignatureException e) {
                 response.sendError(401, "Invalid JWT Token");
+                return;
             } catch (ExpiredJwtException e) {
                 response.sendError(401, "Token Expired");
+                return;
             }
             if (redisTemplate.opsForValue().get("logout:"+accessToken) == null) {
                 Authentication authentication = tokenGenerateValidator.createAuthentication(accessToken);
