@@ -1,11 +1,16 @@
 package com.thinkbigdata.clevo.controller;
 
+import com.thinkbigdata.clevo.dto.CustomPage;
 import com.thinkbigdata.clevo.dto.sentence.LearningLogDto;
 import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
 import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.entity.Sentence;
 import com.thinkbigdata.clevo.service.SentenceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -28,14 +33,14 @@ public class SentenceController {
     }
 
     @GetMapping("/sentence/user/sentences")
-    public ResponseEntity<List<UserSentenceDto>> getUserSentences(Authentication authentication) {
-        List<UserSentenceDto> userSentences = sentenceService.getUserSentences(authentication.getName());
+    public ResponseEntity<CustomPage<UserSentenceDto>> getUserSentences(Authentication authentication, @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+        CustomPage<UserSentenceDto> userSentences = sentenceService.getUserSentences(authentication.getName(), pageable);
         return ResponseEntity.ok(userSentences);
     }
 
     @GetMapping("/sentence/user/logs")
-    public ResponseEntity<List<LearningLogDto>> getUserLogs(Authentication authentication) {
-        List<LearningLogDto> learningLogs = sentenceService.getUserLogs(authentication.getName());
+    public ResponseEntity<CustomPage<LearningLogDto>> getUserLogs(Authentication authentication, @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+        CustomPage<LearningLogDto> learningLogs = sentenceService.getUserLogs(authentication.getName(), pageable);
         return ResponseEntity.ok(learningLogs);
     }
 

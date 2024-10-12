@@ -1,5 +1,6 @@
 package com.thinkbigdata.clevo.service;
 
+import com.thinkbigdata.clevo.dto.CustomPage;
 import com.thinkbigdata.clevo.dto.sentence.LearningLogDto;
 import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
 import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
@@ -8,6 +9,8 @@ import com.thinkbigdata.clevo.repository.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,12 +31,11 @@ public class SentenceService {
         return basicEntityService.getSentenceDto(basicEntityService.getSentence(sentenceId));
     }
 
-    public List<UserSentenceDto> getUserSentences(String email) {
+    public CustomPage<UserSentenceDto> getUserSentences(String email, Pageable page) {
         User user = basicEntityService.getUserByEmail(email);
 
         List<UserSentenceDto> userSentences = new ArrayList<>();
-        List<UserSentence> userSentenceList = userSentenceRepository.findByUser(user);
-
+        Page<UserSentence> userSentenceList = userSentenceRepository.findByUser(user, page);
         for (UserSentence userSentence : userSentenceList) {
             SentenceDto sentenceDto = basicEntityService.getSentenceDto(userSentence.getSentence());
             List<LearningLog> logList = learningLogRepository.findBySentence(userSentence.getSentence());
@@ -44,19 +46,22 @@ public class SentenceService {
             }
             userSentences.add(basicEntityService.getUserSentenceDto(userSentence, sentenceDto, logDtoList));
         }
-        return userSentences;
+        return new CustomPage<>(userSentences, userSentenceList.getPageable(),
+                userSentenceList.isLast(), userSentenceList.getTotalElements(), userSentenceList.getTotalPages(), userSentenceList.getSize(),
+                userSentenceList.getNumber(), userSentenceList.getSort(), userSentenceList.isFirst(),userSentenceList.getNumberOfElements(), userSentenceList.isEmpty());
     }
 
-    public List<LearningLogDto> getUserLogs(String email) {
+    public CustomPage<LearningLogDto> getUserLogs(String email, Pageable page) {
         User user = basicEntityService.getUserByEmail(email);
 
-        List<LearningLog> learningLogs = learningLogRepository.findByUser(user);
         List<LearningLogDto> userLogs = new ArrayList<>();
+        Page<LearningLog> learningLogs = learningLogRepository.findByUser(user, page);
         for (LearningLog learningLog : learningLogs) {
             LearningLogDto lld = basicEntityService.getLearningLogDto(learningLog, basicEntityService.getSentenceDto(learningLog.getSentence()));
             userLogs.add(lld);
         }
-        return userLogs;
+        return new CustomPage<>(userLogs, learningLogs.getPageable(), learningLogs.isLast(), learningLogs.getTotalElements(), learningLogs.getTotalPages(), learningLogs.getSize(),
+                learningLogs.getNumber(), learningLogs.getSort(), learningLogs.isFirst(), learningLogs.getNumberOfElements(), learningLogs.isEmpty());
     }
 
     public void deleteUserSentenceById(Integer sentenceId, String email) {
