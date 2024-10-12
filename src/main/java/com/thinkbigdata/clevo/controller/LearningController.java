@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class LearningController {
     private final LearningService learningService;
 
-    @PostMapping("learning/sentence/score")
+    @PostMapping("/learning/sentence/score")
     public ResponseEntity<LearningLogDto> getRandomSentenceResult(@RequestBody @Valid SentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException {
         LearningLogDto result = learningService.getRandomSentenceResult(authentication.getName(), sentence);
         return ResponseEntity.ok(result);
