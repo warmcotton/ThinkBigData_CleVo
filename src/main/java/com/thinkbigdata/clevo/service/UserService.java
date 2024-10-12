@@ -16,7 +16,9 @@ import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -305,11 +307,12 @@ public class UserService {
 
     public UserDashBoardDto userDashboard(String email) {
         UserDashBoardDto dashBoardDto = new UserDashBoardDto();
+        Pageable page = PageRequest.of(0, 10, Sort.by("date").descending());
 
         User user = basicEntityService.getUserByEmail(email);
         dashBoardDto.setUser(basicEntityService.getUserDto(user));
-        dashBoardDto.setUser_sentences(sentenceService.getUserSentences(email));
-        dashBoardDto.setLearning_logs(sentenceService.getUserLogs(email));
+        dashBoardDto.setUser_sentences(sentenceService.getUserSentences(email, page));
+        dashBoardDto.setLearning_logs(sentenceService.getUserLogs(email, page));
 
         return dashBoardDto;
     }

@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder @Getter @Setter
@@ -17,4 +18,5 @@ public class UserSentenceDto {
     private String base64;
     private SentenceDto sentence;
     private List<LearningLogDto> logs;
+    private LocalDateTime date;
 }

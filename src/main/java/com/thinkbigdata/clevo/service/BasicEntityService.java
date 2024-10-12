@@ -88,7 +88,7 @@ public class BasicEntityService {
 
     public UserSentenceDto getUserSentenceDto(UserSentence userSentence, SentenceDto sentenceDto, List<LearningLogDto> logs) {
         return UserSentenceDto.builder().sentence_id(userSentence.getSentence().getId()).sentence(sentenceDto).
-                logs(logs).build();
+                logs(logs).date(userSentence.getDate()).build();
     }
 
     public PostDto getPostDto(Post post, List<CommentDto> comments) {
