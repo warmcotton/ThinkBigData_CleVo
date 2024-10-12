@@ -2,6 +2,7 @@ package com.thinkbigdata.clevo.handler;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.thinkbigdata.clevo.controller.LearningController;
+import com.thinkbigdata.clevo.controller.PostController;
 import com.thinkbigdata.clevo.controller.SentenceController;
 import com.thinkbigdata.clevo.controller.UserController;
 import com.thinkbigdata.clevo.exception.DuplicateEmailException;
@@ -11,6 +12,7 @@ import com.thinkbigdata.clevo.exception.RefreshTokenException;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -20,7 +22,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice(assignableTypes = {LearningController.class, SentenceController.class, UserController.class})
+@RestControllerAdvice(assignableTypes = {LearningController.class, SentenceController.class, UserController.class, PostController.class})
 public class ControllerHandler  {
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<?> illegalArgument(IllegalArgumentException e) {
@@ -72,6 +74,11 @@ public class ControllerHandler  {
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<?> entityExists(EntityExistsException e) {
         return ResponseEntity.status(400).body(toMap(400, e.getMessage()));
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> accessDenied(AccessDeniedException e) {
+        return ResponseEntity.status(403).body(toMap(403, e.getMessage()));
     }
 
     private Map<String, Object> toMap(Integer code, String message) {

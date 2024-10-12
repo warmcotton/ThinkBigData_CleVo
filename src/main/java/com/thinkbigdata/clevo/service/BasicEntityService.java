@@ -1,5 +1,7 @@
 package com.thinkbigdata.clevo.service;
 
+import com.thinkbigdata.clevo.dto.post.CommentDto;
+import com.thinkbigdata.clevo.dto.post.PostDto;
 import com.thinkbigdata.clevo.enums.Category;
 import com.thinkbigdata.clevo.dto.sentence.LearningLogDto;
 import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
@@ -28,6 +30,8 @@ public class BasicEntityService {
     private final SentenceTopicRepository sentenceTopicRepository;
     private final LearningLogRepository learningLogRepository;
     private final UserSentenceRepository userSentenceRepository;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email).orElseThrow(() ->
@@ -86,5 +90,23 @@ public class BasicEntityService {
     public UserSentenceDto getUserSentenceDto(UserSentence userSentence, SentenceDto sentenceDto, List<LearningLogDto> logs) {
         return UserSentenceDto.builder().sentence_id(userSentence.getSentence().getId()).sentence(sentenceDto).
                 logs(logs).build();
+    }
+
+    public PostDto getPostDto(Post post, List<CommentDto> comments) {
+        return PostDto.builder().id(post.getId()).title(post.getTitle()).content(post.getContent()).writer(post.getUser().getEmail()).comments(comments).views(post.getViews()).created(post.getCreated()).modified(post.getModified()).build();
+    }
+
+    public Post getPost(Integer id) {
+        return postRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException("해당하는 게시글 정보가 없습니다."));
+    }
+
+    public CommentDto getCommentDto(Comment comment) {
+        return CommentDto.builder().id(comment.getId()).comment(comment.getContent()).writer(comment.getUser().getEmail()).date(comment.getCreated()).build();
+    }
+
+    public Comment getComment(Integer commentId) {
+        return commentRepository.findById(commentId).orElseThrow(() ->
+                new EntityNotFoundException("해당하는 댓글 정보가 없습니다."));
     }
 }
