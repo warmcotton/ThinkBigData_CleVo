@@ -136,4 +136,12 @@ public class UserController {
 
         return ResponseEntity.ok(tokenDto);
     }
+
+    @PostMapping("/user/delete")
+    public ResponseEntity<?> deleteUser(@RequestBody Map<String, String> password, Authentication authentication) {
+        if (!password.containsKey("password")) throw new IllegalArgumentException("password 정보가 유효하지 않습니다.");
+        if (password.get("password") == null) throw new IllegalArgumentException("password 정보가 유효하지 않습니다.");
+        userService.deleteUser(authentication.getName(), password.get("password"));
+        return ResponseEntity.ok(null);
+    }
 }

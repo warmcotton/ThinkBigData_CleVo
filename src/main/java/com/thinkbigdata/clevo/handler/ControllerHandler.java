@@ -8,6 +8,7 @@ import com.thinkbigdata.clevo.exception.DuplicateEmailException;
 import com.thinkbigdata.clevo.exception.InsufficientUserInfoException;
 import com.thinkbigdata.clevo.exception.InvalidSessionException;
 import com.thinkbigdata.clevo.exception.RefreshTokenException;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -65,6 +66,11 @@ public class ControllerHandler  {
 
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<?> usernameNotfound(UsernameNotFoundException e) {
+        return ResponseEntity.status(400).body(toMap(400, e.getMessage()));
+    }
+
+    @ExceptionHandler(EntityExistsException.class)
+    public ResponseEntity<?> entityExists(EntityExistsException e) {
         return ResponseEntity.status(400).body(toMap(400, e.getMessage()));
     }
 
