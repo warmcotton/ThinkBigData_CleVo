@@ -43,6 +43,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final UserTopicRepository userTopicRepository;
+    private final UserSentenceRepository userSentenceRepository;
     private final TopicRepository topicRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final SentenceService sentenceService;
@@ -290,7 +291,7 @@ public class UserService {
 
     public void updatePassword(String email, PasswordUpdateDto passwordDto) {
         if (!passwordDto.getNewPassword1().equals(passwordDto.getNewPassword2()))
-            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+            throw new BadCredentialsException("등록할 비밀번호가 일치하지 않습니다.");
 
         User user = basicEntityService.getUserByEmail(email);
 
@@ -309,5 +310,23 @@ public class UserService {
         dashBoardDto.setLearning_logs(sentenceService.getUserLogs(email));
 
         return dashBoardDto;
+    }
+
+    public void deleteUser(String email, String password) {
+        User user = basicEntityService.getUserByEmail(email);
+        if (passwordEncoder.matches(password, user.getPassword())) {
+            if (userImageRepository.findByUser(user).isPresent()) {
+                UserImage image = userImageRepository.findByUser(user).get();
+                if (!image.getName().equals(PROFILE_DEFAULT_IMAGE)) deleteImage(image.getName());
+                userImageRepository.delete(image);
+            }
+            if (userSentenceRepository.findByUser(user).size() != 0) {
+                userSentenceRepository.deleteAll(userSentenceRepository.findByUser(user));
+            }
+            if (userTopicRepository.findByUser(user).size() != 0) {
+                userTopicRepository.deleteAll(userTopicRepository.findByUser(user));
+            }
+            userRepository.delete(user);
+        } else throw new BadCredentialsException("비밀번호를 확인해주세요");
     }
 }

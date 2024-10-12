@@ -40,11 +40,11 @@ public class SentenceController {
     }
 
     @PostMapping("/sentence/user")
-    public ResponseEntity<?> addToUserSentence(Authentication authentication, @RequestBody Map<String, String> sentenceInfo) {
+    public ResponseEntity<?> addToUserSentence(Authentication authentication, @RequestBody Map<String, Integer> sentenceInfo) {
         if (!sentenceInfo.containsKey("sentence_id")) throw new IllegalArgumentException("sentence_id 정보가 유효하지 않습니다.");
         if (sentenceInfo.get("sentence_id") == null) throw new IllegalArgumentException("sentence_id 정보가 유효하지 않습니다.");
 
-        sentenceService.addUserSentence(authentication.getName(), Integer.valueOf(sentenceInfo.get("sentence_id")));
+        sentenceService.addUserSentence(authentication.getName(), sentenceInfo.get("sentence_id"));
 
         return ResponseEntity.ok(null);
     }
