@@ -1,13 +1,20 @@
 package com.thinkbigdata.clevo.controller;
 
 import com.thinkbigdata.clevo.dto.*;
+import com.thinkbigdata.clevo.dto.post.CommentDto;
+import com.thinkbigdata.clevo.dto.post.PostDto;
 import com.thinkbigdata.clevo.dto.user.*;
 import com.thinkbigdata.clevo.exception.DuplicateEmailException;
 import com.thinkbigdata.clevo.exception.InvalidSessionException;
 import com.thinkbigdata.clevo.exception.RefreshTokenException;
+import com.thinkbigdata.clevo.service.PostService;
 import com.thinkbigdata.clevo.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,6 +30,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final PostService postService;
 
     @PostMapping ("/signup/user")
     public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserRegistrationDto registerDto) throws DuplicateEmailException {
@@ -57,6 +65,16 @@ public class UserController {
     public ResponseEntity<UserDashBoardDto> userDashboard(Authentication authentication) {
         UserDashBoardDto dashBoardDto = userService.userDashboard(authentication.getName());
         return ResponseEntity.ok(dashBoardDto);
+    }
+
+    @GetMapping("/user/posts")
+    public ResponseEntity<Page<PostDto>> userPosts(Authentication authentication, @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable page) {
+        return ResponseEntity.ok(postService.getUserPostDtos(authentication.getName(), page));
+    }
+
+    @GetMapping("/user/comments")
+    public ResponseEntity<Page<CommentDto>> userComments(Authentication authentication, @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable page) {
+        return ResponseEntity.ok(postService.getUserCommentsDtos(authentication.getName(), page));
     }
 
     @PutMapping("/user-info")

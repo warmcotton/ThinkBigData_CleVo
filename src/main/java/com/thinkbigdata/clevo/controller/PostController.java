@@ -34,7 +34,7 @@ public class PostController {
     }
 
     @GetMapping("/posts")
-    public ResponseEntity<Page<PostDto>> getAllPost(@RequestParam(value = "search", defaultValue = "") String search, @PageableDefault(size = 10, sort = "created", direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<Page<PostDto>> getAllPost(@RequestParam(value = "search", defaultValue = "") String search, @PageableDefault(sort = "created", direction = Sort.Direction.DESC) Pageable pageable) {
         return ResponseEntity.ok(postService.getAllPosts(search, pageable));
     }
 

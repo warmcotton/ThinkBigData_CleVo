@@ -16,6 +16,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -39,14 +40,15 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class UserService {
     private final BasicEntityService basicEntityService;
+    private final SentenceService sentenceService;
     private final IoService ioService;
+    private final PostService postService;
     private final UserRepository userRepository;
     private final UserImageRepository userImageRepository;
     private final UserTopicRepository userTopicRepository;
     private final UserSentenceRepository userSentenceRepository;
     private final TopicRepository topicRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final SentenceService sentenceService;
     private final PasswordEncoder passwordEncoder;
     private final TokenGenerateValidator tokenGenerateValidator;
     private final RedisTemplate<String, String> redisTemplate;
@@ -325,6 +327,16 @@ public class UserService {
             }
             if (userTopicRepository.findByUser(user).size() != 0) {
                 userTopicRepository.deleteAll(userTopicRepository.findByUser(user));
+            }
+            if (postService.getUserPost(email).size() != 0) {
+                for (Post post : postService.getUserPost(email)) {
+                    postService.deletePost(email, post.getId());
+                }
+            }
+            if (postService.getUserComments(email).size() != 0) {
+                for (Comment comment : postService.getUserComments(email)) {
+                    postService.deleteComment(email, comment.getId());
+                }
             }
             userRepository.delete(user);
         } else throw new BadCredentialsException("비밀번호를 확인해주세요");

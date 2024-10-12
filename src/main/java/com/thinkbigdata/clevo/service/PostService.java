@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Service
@@ -92,5 +93,27 @@ public class PostService {
         if (comment.getUser() != user) throw new AccessDeniedException("해당 댓글에 대한 삭제 권한이 없습니다.");
 
         commentRepository.delete(comment);
+    }
+
+    public Page<PostDto> getUserPostDtos(String email, Pageable page) {
+        User user = basicEntityService.getUserByEmail(email);
+        return postRepository.findByUser(user, page).map(post -> PostDto.builder().id(post.getId()).title(post.getTitle()).writer(post.getUser().getEmail())
+                .content(post.getContent()).views(post.getViews()).created(post.getCreated()).modified(post.getModified()).build());
+    }
+
+    public Page<CommentDto> getUserCommentsDtos(String email, Pageable page) {
+        User user = basicEntityService.getUserByEmail(email);
+        return commentRepository.findByUser(user, page).map(comment -> CommentDto.builder().id(comment.getId()).post_id(comment.getPost().getId()).writer(comment.getUser().getEmail())
+                .content(comment.getContent()).date(comment.getCreated()).build());
+    }
+
+    public List<Post> getUserPost(String email) {
+        User user = basicEntityService.getUserByEmail(email);
+        return postRepository.findByUser(user);
+    }
+
+    public List<Comment> getUserComments(String email) {
+        User user = basicEntityService.getUserByEmail(email);
+        return commentRepository.findByUser(user);
     }
 }

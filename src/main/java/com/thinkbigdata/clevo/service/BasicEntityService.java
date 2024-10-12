@@ -17,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 @Transactional
@@ -102,7 +101,7 @@ public class BasicEntityService {
     }
 
     public CommentDto getCommentDto(Comment comment) {
-        return CommentDto.builder().id(comment.getId()).comment(comment.getContent()).writer(comment.getUser().getEmail()).date(comment.getCreated()).build();
+        return CommentDto.builder().id(comment.getId()).post_id(comment.getPost().getId()).content(comment.getContent()).writer(comment.getUser().getEmail()).date(comment.getCreated()).build();
     }
 
     public Comment getComment(Integer commentId) {
