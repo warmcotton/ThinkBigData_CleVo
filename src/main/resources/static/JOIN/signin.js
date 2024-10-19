@@ -30,13 +30,13 @@ signInBtn.addEventListener('click', async () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username: account.email, password: account.pw }),
+        body: JSON.stringify({ email: account.email, password: account.pw }),
       });
 
       const result = await response.json();
 
       if (response.ok) {
-        location.href = "/dashboard";
+        location.href = "/LEVEL/level.html";
       } else {
         alert(result.message);
       }

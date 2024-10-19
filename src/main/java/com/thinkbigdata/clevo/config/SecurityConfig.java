@@ -62,7 +62,8 @@ public class SecurityConfig {
                                 "/CSS/**",
                                 "/js/**",
                                 "/img/**",
-                                "/api/upload-audio"
+                                "/api/upload-audio",
+                                "/dashboard"
                         ).permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
