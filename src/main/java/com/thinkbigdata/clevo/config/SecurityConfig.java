@@ -63,7 +63,9 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/img/**",
                                 "/api/upload-audio",
-                                "/dashboard"
+                                "/dashboard",
+                                "/images/user/profile/**",
+                                "/signup/user"
                         ).permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())

@@ -1,116 +1,80 @@
-async function login(username, password) {
-    const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-    });
-
-    const result = await response.json();
-    return result.success;
-}
-
-async function logout() {
-    const response = await fetch('/logout', {
-        method: 'POST',
-    });
-
-    const result = await response.json();
-    return result.success;
-}
-
-async function checkLoginStatus() {
-    const response = await fetch('/status');  // 잘못된 부분 수정: 실제 서버 엔드포인트에 맞게 '/status'로 변경
-    const result = await response.json();
-    return result.isLoggedIn;
-}
-
-async function handleAuth() {
+document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('loginButton');
     const signupButton = document.getElementById('signupButton');
-    const studyLink = document.getElementById('studyLink');
-    const boardLink = document.getElementById('boardLink');
-    const mypageLink = document.getElementById('mypageLink');
-    const footerStudyLink = document.getElementById('footerStudyLink');
-    const footerBoardLink = document.getElementById('footerBoardLink');
-    const footerMypageLink = document.getElementById('footerMypageLink');
+    const links = {
+        studyLink: document.getElementById('studyLink'),
+        mypageLink: document.getElementById('mypageLink'),
+        footerStudyLink: document.getElementById('footerStudyLink'),
+        footerMypageLink: document.getElementById('footerMypageLink'),
+    };
 
-    const isLoggedIn = await checkLoginStatus();
+    // 로그인 여부 확인 (access 토큰 존재 여부로 판단)
+    function checkLoginStatus() {
+        return !!localStorage.getItem('accessToken');
+    }
 
-    if (isLoggedIn) {
-        const success = await logout();
-        if (success) {
-            loginButton.textContent = '로그인';
-            loginButton.href = '../JOIN/signin.html';
-            loginButton.onclick = null; // 기존 onclick 이벤트 제거
-            signupButton.style.display = 'inline-block'; // 회원가입 버튼 보이기
-
-            // 링크들을 다시 로그인 필요하도록 설정
-            studyLink.href = 'javascript:alert("로그인을 먼저 해주세요.");';
-            boardLink.href = 'javascript:alert("로그인을 먼저 해주세요.");';
-            mypageLink.href = 'javascript:alert("로그인을 먼저 해주세요.");';
-            footerStudyLink.href = 'javascript:alert("로그인을 먼저 해주세요.");';
-            footerBoardLink.href = 'javascript:alert("로그인을 먼저 해주세요.");';
-            footerMypageLink.href = 'javascript:alert("로그인을 먼저 해주세요.");';
-        }
-    } else {
-        const username = prompt('Username:');
-        const password = prompt('Password:');
-        const success = await login(username, password);
-        if (success) {
+    // 로그인 상태에 따른 버튼 및 링크 설정 함수
+    function updateUI(isLoggedIn) {
+        if (isLoggedIn) {
+            // 로그인 되어 있는 상태
             loginButton.textContent = '로그아웃';
             loginButton.href = '#';
-            loginButton.onclick = function() {
-                handleAuth();
+            loginButton.onclick = (e) => {
+                e.preventDefault();
+                handleLogout();
             };
-            signupButton.style.display = 'none'; // 회원가입 버튼 숨기기
+            signupButton.style.display = 'none';
 
             // 링크들을 실제 페이지로 이동하도록 설정
-            studyLink.href = '../STUDY/study.html'; // 실제 학습하기 페이지 링크
-            boardLink.href = '../BOARD/board.html'; // 실제 게시판 페이지 링크
-            mypageLink.href = '../MYPAGE/mypage.html'; // 실제 마이페이지 링크
-            footerStudyLink.href = '../STUDY/study.html';
-            footerBoardLink.href = '../BOARD/board.html';
-            footerMypageLink.href = '../MYPAGE/mypage.html';
+            Object.keys(links).forEach(link => {
+                links[link].href = getActualLink(link);
+            });
         } else {
-            alert('로그인 실패');
+            // 로그인 되어 있지 않은 상태
+            loginButton.textContent = '로그인';
+            loginButton.href = '/JOIN/signin.html';
+            loginButton.onclick = null;
+            signupButton.style.display = 'inline-block';
+
+            // 링크들을 로그인 필요하도록 설정
+            Object.values(links).forEach(link => {
+                link.href = 'javascript:alert("로그인을 먼저 해주세요.");';
+            });
         }
     }
-}
 
-window.onpageshow = async function() {
-    const loginButton = document.getElementById('loginButton');
-    const signupButton = document.getElementById('signupButton');
-
-    const isLoggedIn = await checkLoginStatus();
-
-    if (isLoggedIn) {
-        loginButton.textContent = '로그아웃';
-        loginButton.href = '#';
-        loginButton.onclick = function() {
-            handleAuth();
-        };
-        signupButton.style.display = 'none';
-
-        // 링크들을 실제 페이지로 이동하도록 설정
-        document.getElementById('studyLink').href = '../STUDY/study.html';
-        document.getElementById('boardLink').href = '../BOARD/board.html';
-        document.getElementById('mypageLink').href = '../MYPAGE/mypage.html';
-        document.getElementById('footerStudyLink').href = '../STUDY/study.html';
-        document.getElementById('footerBoardLink').href = '../BOARD/board.html';
-        document.getElementById('footerMypageLink').href = '../MYPAGE/mypage.html';
-    } else {
-        loginButton.textContent = '로그인';
-        loginButton.href = '../JOIN/signin.html';
-        signupButton.style.display = 'inline-block';
-
-        // 링크들을 로그인 필요하도록 설정
-        document.getElementById('studyLink').href = 'javascript:alert("로그인을 먼저 해주세요.");';
-        document.getElementById('boardLink').href = 'javascript:alert("로그인을 먼저 해주세요.");';
-        document.getElementById('mypageLink').href = 'javascript:alert("로그인을 먼저 해주세요.");';
-        document.getElementById('footerStudyLink').href = 'javascript:alert("로그인을 먼저 해주세요.");';
-        document.getElementById('footerBoardLink').href = 'javascript:alert("로그인을 먼저 해주세요.");';
-        document.getElementById('footerMypageLink').href = 'javascript:alert("로그인을 먼저 해주세요.");';
+    // 실제 페이지 링크 반환 함수
+    function getActualLink(linkId) {
+        switch (linkId) {
+            case 'studyLink':
+            case 'footerStudyLink':
+                return '/STUDY/study.html';
+            case 'mypageLink':
+            case 'footerMypageLink':
+                return '/MYPAGE/mypage.html';
+            default:
+                return '#';
+        }
     }
-};
+
+    // 로그아웃 처리 함수
+    function handleLogout() {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        updateUI(false);
+    }
+
+    // 초기 로그인 상태 확인 후 UI 업데이트
+    updateUI(checkLoginStatus());
+
+    // 로그인 버튼 클릭 시 로그인/로그아웃 처리
+    loginButton.addEventListener('click', (e) => {
+        e.preventDefault(); // 기본 동작 방지
+        const isLoggedIn = checkLoginStatus();
+        if (isLoggedIn) {
+            handleLogout();
+        } else {
+            window.location.href = '/JOIN/signin.html';
+        }
+    });
+});

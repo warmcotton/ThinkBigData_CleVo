@@ -317,24 +317,52 @@ submitBtn.addEventListener('click', async function() {
 
     // 서버로 데이터 전송
     try {
-      const response = await fetch('http://localhost:8080/register', {
+    const requestBody = {
+            email: account.email,
+            password1: account.pw,
+            password2: account.pw,
+            name: account.name,
+            nickname: account.name,
+            birth: account.birth,
+            gender: account.gender
+          };
+
+      const response = await fetch('/signup/user', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify(account)
+        body: JSON.stringify(requestBody)
       });
 
       const data = await response.json();
 
+ // 응답이 성공적일 때만 JSON으로 파싱
       if (response.ok) {
-        alert('회원가입이 완료되었습니다.');
-        location.href = 'signin.html';
+        // 세션 ID 가져오기
+        const sessionId = response.headers.get('sessionId');
+
+        console.log('응답 데이터:', data);
+        console.log('세션 ID:', sessionId);
+
+        // 성공적으로 회원가입이 완료되면 다음 페이지로 이동
+        if (data && sessionId) {
+          // 세션 ID와 사용자 정보를 localStorage에 저장하여 다른 페이지에서 접근 가능하도록 함
+          localStorage.setItem('sessionId', sessionId);
+          localStorage.setItem('userDto', JSON.stringify(data));
+
+          // 페이지 이동
+          window.location.href = '/LEVEL/level.html';
+        } else {
+          alert('회원가입은 성공했지만 일부 정보가 누락되었습니다.');
+        }
       } else {
-        resultFailEl.textContent = data.error;
+        const errorData = await response.json();
+        resultFailEl.textContent = errorData.error || '회원가입에 실패했습니다.';
       }
     } catch (error) {
-      resultFailEl.textContent = '회원가입에 실패했습니다.';
+      resultFailEl.textContent = '회원가입 요청 중 문제가 발생했습니다.';
+      console.error('회원가입 오류:', error);
     }
   }
-})
+});

@@ -33,16 +33,22 @@ signInBtn.addEventListener('click', async () => {
         body: JSON.stringify({ email: account.email, password: account.pw }),
       });
 
-      const result = await response.json();
+
 
       if (response.ok) {
-        location.href = "/LEVEL/level.html";
-      } else {
-        alert(result.message);
-      }
-    } catch (error) {
-      console.error('Error:', error);
-      alert('이메일 또는 비밀번호가 잘못 되었습니다.');
-    }
-  }
-});
+          const result = await response.json();
+          // 로그인 성공 시 액세스 토큰과 리프레시 토큰을 저장
+          localStorage.setItem('accessToken', result.access);
+          localStorage.setItem('refreshToken', result.refresh);
+            window.location.href = '/MAIN/main.html';
+
+            } else {
+              // 로그인 실패 시 서버에서 제공하는 메시지 표시
+              alert(result.message);
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            alert('이메일 또는 비밀번호가 잘못 되었습니다.');
+          }
+        }
+      });
