@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CleVo</title>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css">
+  <link rel="stylesheet" href="join.css">
+  <script defer src="join.js"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="content">
+      <!-- HEADER -->
+      <header>
+        <h2>회원가입</h2>
+      </header>
+
+      <!-- INPUT -->
+      <section>
+        <div class="info" id="info__email">
+          <input class="box" id="email-txt" type="text" placeholder="이메일 입력"/>
+          <div class="error-msg"></div>
+          <span>@</span>
+          <input class="box" id="domain-txt" type="text"/>
+          <select class="box" id="domain-list">
+            <option value="type">직접 입력</option>
+            <option value="naver.com">naver.com</option>
+            <option value="gmail.com">gmail.com</option>
+            <option value="hanmail.net">hanmail.net</option>
+            <option value="nate.com">nate.com</option>
+            <option value="kakao.com">kakao.com</option>
+          </select>
+        </div>
+        <div class="info" id="info__pw">
+          <input class="box" type="password" placeholder="비밀번호 입력 (문자, 숫자, 특수문자 포함 8~16자)"/>
+          <div class="error-msg"></div>
+        </div>
+        <div class="info" id="info__pwRe">
+          <input class="box" type="password" placeholder="비밀번호 재입력"/>
+          <div class="error-msg"></div>
+        </div>
+  
+        <div class="info" id="info__id">
+          <div id="id-input">
+            <input class="box" type="text" placeholder="아이디 입력(10자 이내)"/>
+            <button id="id-check">중복 확인</button>
+          </div>
+          <div class="error-msg"></div>
+        </div>
+        <div class="info" id="info__name">
+          <input class="box" type="text" placeholder="이름 입력"/>
+        </div>
+        <div class="info" id="info__birth">
+          <div id="birth-flex">
+            <select class="box" id="birth-year">
+              <option disabled selected>출생 연도</option>
+            </select>
+            <select class="box" id="birth-month">
+              <option disabled selected>월</option>
+            </select>
+            <select class="box" id="birth-day">
+              <option disabled selected>일</option>
+            </select>
+          </div>
+          <div class="error-msg"></div>
+        </div>
+        <!-- <div id="print-date"></div> -->
+        <div class="info" id="info__gender">
+          <input type="radio" id="male" name="gender"><label for="male">남성</label>
+          <input type="radio" id="female" name="gender"><label for="female">여성</label>
+        </div>
+      </section>
+      <div id="result-fail"></div>
+      <button id="submit" >가입하기</button>
+      <div class="exist">
+        <span>이미 회원이신가요?</span>
+        <a href="signin.html">로그인 하러가기</a>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

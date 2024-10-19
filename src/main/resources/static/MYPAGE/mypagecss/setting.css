@@ -1,0 +1,134 @@
+/* ============= 기본 컨테이너 스타일 ============= */
+.setting-container,
+.setting-container-select {
+    max-width: 700px;             /* 최대 너비 설정 */
+    margin: 0 auto;               /* 가로 중앙 정렬 */
+    margin-bottom: 50px;          /* 아래 여백 */
+    padding: 20px;                /* 내부 여백 */
+    border: 1px solid #ddd;       /* 테두리 설정 */
+    border-radius: 15px;          /* 둥근 모서리 */
+    background-color: #fff;       /* 배경색 */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  /* 그림자 */
+}
+
+/* ============= 제목 스타일 ============= */
+h2 {
+    font-size: 1.3rem;            /* 제목 크기 */
+    margin-bottom: 10px;          /* 제목과 아래 요소 간격 */
+    color: #333;                  /* 텍스트 색상 */
+    display: flex;                /* 아이콘과 텍스트 정렬 */
+    align-items: center;          /* 수직 중앙 정렬 */
+    font-weight: bold;            /* 굵은 텍스트 */
+}
+
+h3 {
+    font-size: 1.1rem;            /* 소제목 크기 */
+    color: #333;                  /* 텍스트 색상 */
+    margin-bottom: 10px;          /* 아래 요소 간격 */
+}
+
+/* ============= 입력 필드 스타일 ============= */
+.password-confirmation p {
+    font-size: 1rem;
+    color: #333;
+}
+
+.password-confirmation input {
+    width: calc(100% - 160px);    /* 너비 계산하여 버튼 크기 제외 */
+    padding: 10px;                /* 입력 필드 내부 여백 */
+    margin-right: 10px;           /* 오른쪽 여백 */
+    border: 1px solid #ddd;       /* 테두리 설정 */
+    border-radius: 5px;           /* 둥근 모서리 */
+}
+
+/* ============= 비밀번호 입력 버튼 스타일 ============= */
+.password-confirm-btn {
+    background-color: #6B8E23;    /* 기본 배경색 */
+    color: white !important;                 /* 텍스트 색상 */
+    border: none;                 /* 테두리 제거 */
+    border-radius: 5px;           /* 둥근 모서리 */
+    padding: 8px 20px;           /* 버튼 패딩 */
+    cursor: pointer;              /* 클릭 가능 마우스 포인터 */
+    font-size: 1rem;              /* 글자 크기 */
+    transition: background-color 0.1s ease; /* 배경색 전환 효과 */
+}
+
+.password-confirm-btn:hover {
+    background-color: #4F7030;    /* 호버 시 배경색 */
+}
+
+/* ============= 카테고리 및 레벨 선택 스타일 ============= */
+.content input[type=checkbox],
+.content input[type=radio] {
+    display: none;                /* 기본 체크박스, 라디오 버튼 숨김 */
+}
+
+.container-select {
+    background-color: #f1f1f1;    /* 선택 컨테이너 배경색 */
+    border-radius: 20px;          /* 둥근 모서리 */
+    padding: 30px;                /* 내부 여백 */
+    margin-bottom: 20px;          /* 아래 여백 */
+}
+
+.category-options,
+.level-options {
+    display: flex;                /* 플렉스박스 사용 */
+    justify-content: space-between; /* 균등 간격 배치 */
+    gap: 10px;                    /* 항목 사이 간격 */
+    flex-wrap: wrap;              /* 필요 시 줄바꿈 */
+}
+
+/* ============= 버튼 스타일 (카테고리 및 레벨 선택) ============= */
+.category-btn,
+.level-btn {
+    cursor: pointer;
+    margin-right: 10PX;
+    height: 30px;
+    width: 120px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    border: 1px solid #d9d6d6;
+    line-height: 24px;
+    text-align: center;
+    color: #383838;
+    font-weight:bold;
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+    padding : 9px 20px;
+    background-color: #A6B782;
+    outline: 0.5px solid #56721C;
+    color: #fff;
+    flex-wrap: wrap; 
+}
+
+/* 선택된 버튼 스타일 */
+.category-btn.active,
+.level-btn.active {
+    background-color: #6B8E23;    /* 선택된 상태 배경색 */
+    color: white;                 /* 선택된 상태 텍스트 색상 */
+}
+
+/* ============= 저장하기 버튼 스타일 ============= */
+#submit {
+    background-color: #514D45;    /* 기본 배경색 */
+    color: white;                 /* 텍스트 색상 */
+    border: none;                 /* 테두리 제거 */
+    border-radius: 10px;          /* 둥근 모서리 */
+    padding: 12px 30px;           /* 버튼 패딩 */
+    font-size: 1.1rem;            /* 글자 크기 */
+    cursor: pointer;              /* 클릭 가능 마우스 포인터 */
+    transition: background-color 0.3s ease; /* 배경색 전환 효과 */
+    display: block;               /* 블록으로 설정 (가로 너비 100%) */
+    margin: 20px auto 0;          /* 가운데 정렬 및 위 여백 */
+    margin-right: 10px;
+}
+
+#submit:hover {
+    background-color: #3e3a34;    /* 호버 시 배경색 */
+}
+
+/* ============= 공통 텍스트 스타일 ============= */
+p {
+    color: #333;                  /* 텍스트 색상 */
+    font-size: 0.95rem;           /* 글자 크기 */
+    margin-bottom: 10px;          /* 아래 여백 */
+}

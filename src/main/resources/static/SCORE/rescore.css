@@ -1,0 +1,64 @@
+/* 전체 페이지 스타일 */
+body {
+    font-family: "Arial", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+  }
+  
+  #container {
+    margin-top: 300px;
+    text-align: center;
+  }
+  
+  /* 아이콘 스타일 */
+  #container img {
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    border-radius: 50%; /* 원형 이미지 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+    transition: transform 0.3s ease; /* 호버 시 애니메이션 */
+  }
+  
+  #container img:hover {
+    transform: scale(1.1); /* 호버 시 확대 */
+  }
+  
+  /* 문장 스타일 */
+  #english-sentence {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333; /* 글자색 변경 */
+  }
+  
+  #korean-sentence {
+    font-size: 18px;
+    color: #777;
+    margin-bottom: 20px;
+  }
+  #score-container {
+    margin-top: 20px;
+    text-align: left;
+  }
+  
+  .score-item {
+    display: inline-block;
+    margin: 10px;
+    padding: 10px;
+    background-color: #f9e8d2; /* 귀여운 핑크색 배경 */
+    border-radius: 10px;
+  }
+  
+  .score-item p {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  .score-item span {
+    font-size: 18px;
+    color: #ff6b6b; /* 귀여운 색상 */
+    font-weight: bold;
+  }
+  

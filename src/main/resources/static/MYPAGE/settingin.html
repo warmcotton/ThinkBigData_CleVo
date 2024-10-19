@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원정보 변경</title>
+
+    <!-- 기존 CSS 파일 및 아이콘 불러오기 -->
+    <link rel="stylesheet" href="../CSS/header.css">
+    <link rel="stylesheet" href="../CSS/mypage.css">
+    <link rel="stylesheet" href="mypagecss/settingin.css">
+
+    <script src="https://kit.fontawesome.com/6b435800dd.js" crossorigin="anonymous"></script>
+    <script src="mypagejs/settingin.js" defer></script>
+</head>
+<body>
+    <!-- 기존 헤더 유지 -->
+    <header id="headerType" class="header__wrap nexon">
+        <div class="header__inner">
+            <div class="header__logo">
+                <a href="../MAIN/main.html">
+                    <img src="../img/Logo.png" alt="Logo" width="170px" height="33px">
+                </a>
+            </div>
+            <nav class="header__menu" aria-label="Main Navigation">
+                <ul>
+                    <li><a href="../STUDY/study.html">학습하기</a></li>
+                    <li><a href="mypage.html">마이페이지</a></li>
+                </ul>
+            </nav>
+            <form class="header__search" action="" method="get">
+                <input class="search_txt" type="text" placeholder="검색어를 입력하세요.">
+                <button class="search_btn" type="submit">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+            <div class="header__member">
+                <a href="../MAIN/main.html">로그아웃</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 메인 섹션 -->
+    <main class="mypage-main">
+        <!-- 회원정보 변경 폼 -->
+        <div class="container settingin-form">
+            <h3 class="form-title">회원정보변경</h3>
+            <div class="setting-container">
+                <!-- 프로필 섹션 -->
+                <div class="profile-section">
+                    <div class="profile-img">
+                        <label for="image">프로필 이미지</label>
+                        <i class="fa-solid fa-user-circle" style="font-size: 70px;"></i>
+                    </div>
+                    <div class="profile-desc">
+                        <button class="change-btn">변경</button>
+                        <p>확장자: png, jpg, jpeg / 용량: 1MB 이하</p>
+                    </div>
+                </div>
+
+                <!-- 정보 입력 섹션 -->
+                <div class="info-section">
+                    <label for="nickname">닉네임</label>
+                    <input type="text" id="nickname" value="Clevo123">
+
+                    <label for="current-pw">비밀번호</label>
+                    <input type="password" id="current-pw" placeholder="기존 비밀번호">
+                    <input type="password" id="new-pw" placeholder="새 비밀번호">
+                    <input type="password" id="confirm-pw" placeholder="새 비밀번호 확인">
+
+                    <label for="email">이메일</label>
+                    <input type="email" id="email" placeholder="기존 이메일">
+                </div>
+
+                <!-- 저장 버튼 -->
+                <button class="save-btn">저장하기</button>
+            </div>
+            <!-- 탈퇴 버튼을 박스 밖에 위치 -->
+            <button class="cancel-btn">탈퇴 ></button>
+
+            <!-- 탈퇴 모달 -->
+            <div id="deleteModal" class="modal">
+                <div class="modal-content">
+                <!-- X 버튼 추가 -->
+                <span class="close-x">&times;</span>
+                
+                <h3>탈퇴 안내 사항</h3>
+                <p>서비스에 만족하지 못하셨나요? 어쩌구 저쩌구 유의사항을 꼭 확인해주세요! 감사합니다.</p>
+                <div class="warning">
+                    <h4>유의사항</h4>
+                    <ul>
+                    <li>계정 탈퇴 시, clevo의 서비스에서 탈퇴됩니다.</li>
+                    <li>모든 게시물 및 댓글은 유지되며, 직접 삭제하셔야 할 수 있습니다.</li>
+                    <li>탈퇴 후 동일한 이메일 주소로는 다시 가입이 불가능할 수 있습니다.</li>
+                    <li>저장된 데이터는 복구할 수 없습니다.</li>
+                    <li>유의사항을 꼭 확인해주세요!</li>
+                    </ul>
+                </div>
+                <input type="password" placeholder="현재 비밀번호" class="input-password">
+                <button id="confirmDelete" class="confirm-btn">탈퇴하기</button>
+                </div>
+            </div>
+  
+  
+  
+  
+        </div>
+    </main>
+</body>
+</html>

@@ -1,0 +1,64 @@
+.side_bar {
+    top: 70.8px;
+    width: 500px;
+    height: 100%;
+    background: none;
+    transition: all 0.3s ease;
+}
+
+.side_bar ul {
+    list-style-type: none;
+    padding: 1px;
+    margin: 50px;
+    width: 200px;
+    background: none;
+    height: 100%;    
+}
+
+.side_bar ul li {
+    width: 100%;
+    font-size: 18px;
+    cursor: pointer;
+    text-decoration: none;
+    padding: 10px;
+    display: block;
+    color: #B8B8B8;
+    font-weight: bold;    
+}
+
+.side_bar ul h4 {
+    text-align: center;
+    color: #6B8E23;
+    margin-bottom: 8px;
+    margin-top: 30px;
+    font-size: 20px;
+    left: 50px;
+}
+
+.side_bar ul hr {
+    left: 50px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.side_bar ul li.on {
+    color: #000000;
+}
+
+.container {
+    flex: 1;
+    padding-top: 70.8px;
+    padding-bottom: 60px;
+}
+
+/* New CSS for positioning */
+.mystudy {
+    display: flex;
+}
+
+.side_bar {
+    width: 300px;
+    height: 100vh;
+    background: none;
+    transition: all 0.3s ease;
+}

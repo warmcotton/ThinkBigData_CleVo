@@ -1,0 +1,82 @@
+/* 푸터 스타일 */
+.footer {
+  background-color: #08340a; /* 어두운 초록색 배경 */
+  color: #ffffff; /* 흰색 텍스트 */
+  padding: 20px 0;
+  max-height: 300px;
+  font-family: "NexonLv1Gothic", Arial, sans-serif;
+}
+
+.footer-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.footer-section {
+  flex: 1 1 300px;
+  margin: 20px;
+}
+
+.footer-section h2 {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+  color: #ffffff; /* 흰색 제목 */
+}
+
+.footer-section p {
+  font-size: 0.7em;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #c8e6c9;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li {
+  margin-bottom: 10px;
+}
+
+.footer-section ul li a {
+  color: #c8e6c9; /* 밝은 초록색 링크 */
+  font-size: 0.9em;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-section ul li a:hover {
+  color: #ffffff; /* 흰색으로 변경 */
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+  margin-top: 30px;
+  margin-left: 180px;
+  margin-bottom: 30px;
+}
+
+.social-icons a {
+  color: #c8e6c9;
+  font-size: 1.5em;
+  transition: color 0.3s ease;
+  margin-right: 20px;
+}
+
+.social-icons a:hover {
+  color: #ffffff;
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 10px;
+  padding-top: 20px;
+  border-top: 1px solid #c8e6c9;
+  font-size: 0.9em;
+}

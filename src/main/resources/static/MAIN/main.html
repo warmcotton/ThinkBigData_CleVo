@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleVo</title>
+
+    <link rel="stylesheet" href="../CSS/header.css">
+    <link rel="stylesheet" href="../CSS/slide.css"> <!--main페이지 css-->
+    <link rel="stylesheet" href="footer.css">
+    <link rel="stylesheet" href="main.css">
+    <script src="https://kit.fontawesome.com/6b435800dd.js" crossorigin="anonymous"></script>
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <header id="headerType" class="header__wrap nexon">
+        <div class="header__inner">
+            <div class="header__logo">
+                <a href="#" onclick="location.reload(); return false;"><img src="../img/Logo.png" alt="Logo" width="170px" height="33px"></a>
+            </div>
+            <nav class="header__menu">
+                <ul>
+                  <li><a id="studyLink" href="javascript:alert('로그인을 먼저 해주세요.');">학습하기</a></li>
+                  <li><a id="mypageLink" href="javascript:alert('로그인을 먼저 해주세요.');">마이페이지</a></li>
+                </ul>
+            </nav>
+            <form class="header__search" action="" method="get">
+                <input class="search_txt" type="text" placeholder="검색어를 입력하세요.">
+                <button class="search_btn" type="submit" href="#">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </form>
+        </div>
+    </header>
+  
+    <section id="slideType" class="slider__wrap nexon">
+        <h2 class="blind">슬라이드 유형</h2>
+        <div class="slder__inner">
+            <div class="slider__img">
+                <div class="desc">
+                    <h3>Welcome to the CleVo</h3>
+                    <p>
+                        클래보의 AI 선생님과 부담 없이 영어 회화를 연습해봐요.<br />
+                        Speaking 자신감을 가질 수 있어요!
+                    </p>
+                    <div class="btn">
+                        <a href="../JOIN/signin.html" id="loginButton">로그인</a>
+                        <a href="../JOIN/join.html" id="signupButton" class="black">회원가입</a>
+                    </div>
+                </div>
+            </div>
+            <div class="slider__arrow"></div>
+            <div class="slider__dot"></div>
+        </div>
+    </section>
+
+    <section class="faq">
+        <div class="container">
+            <h2>자주 묻는 질문</h2>
+            <div class="faq-item">
+                <h3>Q: CleVo는 어떠한 웹사이트인가요?</h3>
+                <p>A: 언어를 선택할 때는 개인의 관심과 목표를 고려해야 합니다. 가장 널리 사용되는 언어 중 하나를 선택하는 것이 좋습니다.</p>
+            </div>
+            <div class="faq-item">
+                <h3>Q: 학습에 얼마나 시간이 걸릴까요?</h3>
+                <p>A: 개인의 능력과 투자한 시간에 따라 다르지만, 기초를 다지려면 보통 몇 달에서 몇 년이 걸릴 수 있습니다.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="social-icons">
+            <a href="https://www.facebook.com/?locale=ko_KR" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://x.com/?lang=ko" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+            <a href="https://www.instagram.com/" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+        <div class="footer-container">
+            <div class="footer-section about">
+                <h2>CleVo</h2>
+                <p>CleVo는 언어 학습을 위한 최고의 플랫폼을 제공합니다.<br>
+                    다양한 도구와 자료로 학습을 지원합니다.</p>
+            </div>
+            <div class="footer-section links">
+                <h2>메뉴</h2>
+                <ul>
+                    <li><a id="footerStudyLink" href="javascript:alert('로그인을 먼저 해주세요.');">학습하기</a></li>
+                    <li><a id="footerMypageLink" href="javascript:alert('로그인을 먼저 해주세요.');">마이페이지</a></li>
+                </ul>
+            </div>
+            <div class="footer-section contact">
+                <h2>연락처</h2>
+                <p>이메일: info@clevo.com<br>
+                    전화: 010-1234-5678</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 CleVo. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

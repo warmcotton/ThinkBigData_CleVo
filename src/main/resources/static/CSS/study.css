@@ -1,0 +1,79 @@
+body {
+  font-family: "Noto Sans KR", sans-serif;
+  background-color: #f5fffa; /* 연초록색 배경 */
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+#container {
+  width: 34%;
+  max-width: 800px;
+  margin: 80px auto;
+  text-align: left;
+}
+
+#description {
+  margin-bottom: 60px;
+  text-align: center;
+}
+
+#description p {
+  font-size: 1.2em;
+  color: #555;
+  line-height: 1.5;
+}
+#sentence-list {
+  list-style: none;
+  padding: 0;
+}
+
+#sentence-list li {
+  margin: 12px 0;
+  padding: 20px;
+  border: 1px solid transparent;
+  border-radius: 17px;
+  color: #fff;
+  font-family: "Poppins", sans-serif; /* 상자 안의 문장들만 글씨체 설정 */
+  font-weight: 800; /* 중간 굵기 */
+}
+
+/* 그라데이션 */
+#sentence-list li:nth-child(1) {
+  background-color: #a8a9a6;
+}
+
+#sentence-list li:nth-child(2) {
+  background-color: #9ba38b;
+}
+
+#sentence-list li:nth-child(3) {
+  background-color: #819162;
+}
+
+#sentence-list li:nth-child(4) {
+  background-color: #708444;
+}
+
+#sentence-list li:nth-child(5) {
+  background-color: #6b8e23;
+}
+
+#sentence-list li:hover {
+  background-color: #454545;
+}
+
+#generate-btn {
+  padding: 10px 20px;
+  background-color: #20b2aa; /* 중간 연초록색 */
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1em;
+  text-align: right;
+}
+
+#generate-btn:hover {
+  background-color: #3cb371; /* 더 진한 연초록색 */
+}
