@@ -36,9 +36,34 @@ public class SecurityConfig {
                 .headers(configurer -> configurer.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
-        http.authorizeHttpRequests(authorize ->
-                        authorize.requestMatchers("/actuator/**", "/h2-console/**", "/signup/user", "/signup/info", "/find/password", "/login","/images/**",
-                                        "/refresh/token", "/error", "/record.html", "/recorder.js", "/static/**", "/css/**", "/js/**", "/api/upload-audio").permitAll()
+        http.authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/actuator/**",
+                                "/h2-console/**",
+                                "/signup/user",
+                                "/signup/info",
+                                "/find/password",
+                                "/login",
+                                "/images/**",
+                                "/refresh/token",
+                                "/error",
+                                "/MAIN/**",
+                                "/RECORD/**",
+                                "/BOARD/**",
+                                "/JOIN/**",
+                                "/LEVEL/**",
+                                "/MYPAGE/**",
+                                "/MYPAGE/mypagecss/**",
+                                "/MYPAGE/mypagejs/**",
+                                "/RECORD/**",
+                                "/SCORE/**",
+                                "/STUDY/**",
+                                "/static/**",
+                                "/CSS/**",
+                                "/js/**",
+                                "/img/**",
+                                "/api/upload-audio"
+                        ).permitAll()
                                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                                 .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
