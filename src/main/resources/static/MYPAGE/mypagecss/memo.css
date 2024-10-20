@@ -1,0 +1,60 @@
+/* 메모장 전체 컨테이너 */
+#memoContainer {
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* 메모 입력 필드와 추가 버튼을 한 줄로 배치 */
+#memoInputContainer {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* 메모 입력 필드 스타일 */
+#newMemo {
+    flex: 1;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* 메모 추가 버튼 스타일 */
+#addMemoBtn {
+    padding: 10px 15px;
+    background-color: #6B8E23;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* 메모 추가 버튼 hover 효과 */
+#addMemoBtn:hover {
+    background-color: #4F7030;
+}
+
+/* 메모 리스트 스타일 */
+#memoList {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* 개별 메모 항목 스타일 */
+#memoList li {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: white;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

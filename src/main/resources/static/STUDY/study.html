@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Study Page</title>
+    <link rel="stylesheet" href="../CSS/study.css" />
+    <link rel="stylesheet" href="../CSS/header.css" />
+  </head>
+
+  <body>
+    <header id="headerType" class="header__wrap nexon">
+      <div class="header__inner">
+          <div class="header__logo">
+              <a href="../MAIN/main.html">
+                  <img src="../img/Logo.png" alt="Logo" width="170px" height="33px">
+              </a>
+          </div>
+          <nav class="header__menu" aria-label="Main Navigation">
+              <ul>
+                  <li><a href="../STUDY/study.html">학습하기</a></li>
+                  <li><a href="../MYPAGE/mypage.html">마이페이지</a></li>
+              </ul>
+          </nav>
+          <form class="header__search" action="" method="get">
+              <input class="search_txt" type="text" placeholder="검색어를 입력하세요.">
+              <button class="search_btn" type="submit">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+          </form>
+          <div class="header__member">
+              <a href="../MAIN/main.html">로그아웃</a>
+          </div>
+      </div>
+  </header>
+
+    <div id="container">
+      <div id="description">
+        <p>
+          다음 주어진 5개의 문장은 <br />
+          {user_id} 님께서 고른 카테고리를 기반으로 추천된 문장입니다.<br />다음
+          중 학습할 문장 하나를 골라주세요.
+        </p>
+      </div>
+
+      <ul id="sentence-list"></ul>
+      <button id="generate-btn">Re</button>
+    </div>
+    <script src="study.js"></script>
+  </body>
+</html>

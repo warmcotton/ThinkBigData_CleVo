@@ -1,0 +1,80 @@
+/*header부분을 제외한 css작성*/
+.red-text {
+  color: red;
+}
+.right-align {
+  text-align: right;
+}
+.right-margin {
+  margin-right: 120px;
+}
+
+.board-title {
+  text-align: left;
+  margin-left: 90px;
+}
+
+.scroll-button {
+  position: fixed;
+  padding: 5px;
+  font-size: 21px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: grey;
+}
+
+.top-button {
+  bottom: 60px;
+  right: 20px;
+}
+
+.bottom-button {
+  bottom: 20px;
+  right: 20px;
+}
+
+.title-text {
+  color: pink;
+}
+
+.pagination {
+  margin-top: 20px;
+}
+
+.pagination a,
+.pagination span {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  text-decoration: none;
+  color: #333;
+}
+
+.pagination a:hover {
+  background-color: #f0f0f0;
+}
+
+.pagination .current-page {
+  background-color: #800020;
+  color: #fff;
+  border-color: #800020;
+}
+
+.rounded-image {
+  border-radius: 50%;
+  width: 14px;
+  height: 14px;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.title-link {
+  color: black;
+  text-decoration: none;
+}
+.title-link:hover {
+  text-decoration: underline;
+}

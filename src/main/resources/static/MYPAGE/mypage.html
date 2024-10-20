@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyPage</title>
+
+    <link rel="stylesheet" href="../CSS/header.css">
+    <link rel="stylesheet" href="../CSS/mypage.css">
+    <link rel="stylesheet" href="mypagecss/mystudy.css">
+    <link rel="stylesheet" href="mypagecss/memo.css">
+    <link rel="stylesheet" href="mypagecss/setting.css">
+
+    <script src="https://kit.fontawesome.com/6b435800dd.js" crossorigin="anonymous"></script>
+    <script src="mypagejs/mypage.js" defer></script>
+    <script src="mypagejs/mystudy.js" defer></script>
+    <script src="mypagejs/memo.js" defer></script>
+    <script src="mypagejs/comment.js" defer></script>
+    <script src="mypagejs/post.js" defer></script>
+    <script src="mypagejs/setting.js" defer></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+<body>
+    <header id="headerType" class="header__wrap nexon">
+      <div class="header__inner">
+          <div class="header__logo">
+              <a href="../MAIN/main.html">
+                  <img src="../img/Logo.png" alt="Logo" width="170px" height="33px">
+              </a>
+          </div>
+          <nav class="header__menu" aria-label="Main Navigation">
+              <ul>
+                  <li><a href="../STUDY/study.html">학습하기</a></li>
+                  <li><a href="mypage.html">마이페이지</a></li>
+              </ul>
+          </nav>
+          <form class="header__search" action="" method="get">
+              <input class="search_txt" type="text" placeholder="검색어를 입력하세요.">
+              <button class="search_btn" type="submit">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+              </button>
+          </form>
+          <div class="header__member">
+              <a href="../MAIN/main.html">로그아웃</a>
+          </div>
+      </div>
+  </header>
+
+    <main class="mystudy">
+        <aside class="side_bar js-side_bar">
+            <ul>
+                <h4>마이페이지</h4>
+                <hr width="99%" color="#6B8E23">
+                <li class="mystudy on" onclick="setNew('mystudy')">나의 학습</li>
+                <li class="memo" onclick="setNew('memo')">메모장</li>
+                <li class="setting" onclick="setNew('setting')">설정</li>
+            </ul>
+        </aside>
+        <div class="container">
+            <div id="mystudy" class="page_mystudy"></div>
+            <div id="memo" class="page_memo"></div>
+            <div id="setting" class="page_setting"></div>
+        </div>
+    </main>
+</body>
+</html>

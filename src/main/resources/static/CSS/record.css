@@ -1,0 +1,61 @@
+/* 전체 페이지 스타일 */
+body {
+  font-family: "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+}
+
+#container {
+  margin-top: 300px;
+  text-align: center;
+}
+
+/* 아이콘 스타일 */
+#container img {
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+  border-radius: 50%; /* 원형 이미지 */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  transition: transform 0.3s ease; /* 호버 시 애니메이션 */
+}
+
+#container img:hover {
+  transform: scale(1.1); /* 호버 시 확대 */
+}
+
+/* 문장 스타일 */
+#english-sentence {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333; /* 글자색 변경 */
+}
+
+#korean-sentence {
+  font-size: 18px;
+  color: #777;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #457846; /* 귀여운 분홍색 */
+  color: #fff;
+  border: none;
+  border-radius: 20px; /* 라운드 모서리 */
+  margin: 5px;
+  transition: background-color 0.3s ease; /* 호버 시 색상 변경 애니메이션 */
+}
+
+button:hover {
+  background-color: #0a340c; /* 호버 시 색상 변경 */
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

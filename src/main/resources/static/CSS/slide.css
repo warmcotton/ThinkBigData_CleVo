@@ -1,0 +1,68 @@
+@import url('https://webfontworld.github.io/NexonLv1Gothic/NexonLv1Gothic.css');
+
+:root {
+    --primary-color: #6B8E23;
+    --secondary-color: #f1f1f1;
+    --text-color: #797979;
+    --font-size: 1em;
+}
+
+.nexon {
+    font-family: 'NexonLv1Gothic';
+    font-weight: 400;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+.blind {
+    width: 0;
+    height: 0;
+    line-height: 0;
+    overflow: hidden;
+    position: absolute;
+    text-indent: -9999px;
+}
+  
+.slider__img {
+    background-image: url(../img/slide.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+}
+.slider__img .desc {
+    width: 1160px;
+    margin: 0 auto;
+    padding: 100px 20px;
+}
+.slider__img .desc h3 {
+    font-size: 70px;
+    font-weight: 500;
+    line-height: 1;
+    color: #fff;
+    text-transform: none;
+    margin-bottom: 40px;
+    margin-left: -10px;
+}
+.slider__img .desc p {
+    font-size: 20;
+    font-weight: 300;
+    color: #fff;
+    line-height: 1.35;
+    margin-bottom: 130px;
+}
+.slider__img .desc .btn a {
+    font-size: 16px;
+    background: #fff;
+    padding: 11px 50px;
+    display: inline-block;
+}
+.slider__img .desc .btn a.black {
+    font-size: 16px;
+    background: #000;
+    color: #fff;
+    padding: 11px 50px;
+    margin-left: -70px;
+}
+  

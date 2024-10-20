@@ -1,0 +1,137 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="row justify-content-center">
+      <div class="col-lg-6" style="margin-right: 670px">
+        <input
+          class="btn btn-secondary"
+          type="button"
+          value="뒤로 가기"
+          onclick="history.go(-1)"
+        />
+      </div>
+    </div>
+  </div>
+  <br />
+
+  <h2 class="text-left" style="margin-left: 20px"><b>게시글 작성</b></h2>
+</div>
+
+<div class="container">
+  <form
+    method="post"
+    action="{% url 'board:write' %}"
+    name="writeform"
+    enctype="multipart/form-data"
+  >
+    <input type="hidden" name="num" value="{{ num }}" />
+
+    <div class="mb-3">
+      <label for="writer" class="form-label"><br />작성자</label>
+      <input
+        class="form-control"
+        type="text"
+        name="writer"
+        id="writer"
+        value="{{ user_id }}"
+        maxlength="50"
+        readonly
+      />
+    </div>
+
+    <div class="mb-3">
+      <label for="subject" class="form-label">제목</label>
+      <input
+        class="form-control"
+        type="text"
+        name="subject"
+        id="subject"
+        maxlength="300"
+        autofocus
+      />
+    </div>
+    <div class="mb-3">
+      <label for="content" class="form-label">내용</label>
+      <textarea
+        class="form-control"
+        name="content"
+        id="content"
+        rows="10"
+        cols="40"
+      ></textarea>
+    </div>
+    <div class="mb-3">
+      <div class="col-lg-6">
+        <div class="form-group">
+          <label for="img" class="form-label">이미지</label>
+          <input
+            class="form-control"
+            type="file"
+            name="img"
+            id="img"
+            accept="image/*"
+          />
+        </div>
+      </div>
+    </div>
+
+    <br />
+    <div class="mb-3 d-flex justify-content-center">
+      <input class="btn btn-primary" type="submit" value="작성" />&nbsp;
+      <input
+        class="btn btn-secondary"
+        type="reset"
+        value="작성초기화"
+        autofocus
+      />&nbsp;
+    </div>
+  </form>
+</div>
+
+<script>
+  document
+    .querySelector("form[name='writeform']")
+    .addEventListener("submit", function (event) {
+      event.preventDefault(); // 폼 제출 이벤트를 중지
+
+      //var writer = document.getElementById("writer").value;
+      var subject = document.getElementById("subject").value;
+      var content = document.getElementById("content").value;
+      //var passwd = document.getElementById("passwd").value;
+      /*
+		if (writer.trim() === '' || subject.trim() === '' || content.trim() === '' || passwd.trim() === '') {
+			return false; // 모든 필드가 입력되지 않았을 경우 함수 종료
+		}
+		*/
+      if (subject.trim() === "" || content.trim() === "") {
+        return false; // 모든 필드가 입력되지 않았을 경우 함수 종료
+      }
+
+      // 폼 데이터를 서버로 전송하는 AJAX 요청
+      var formData = new FormData(this);
+      var xhr = new XMLHttpRequest();
+      xhr.open("POST", "write", true);
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+          // 요청이 성공적으로 완료되었을 때 처리할 로직
+          console.log(xhr.responseText); // 응답 데이터 출력 (예시)
+          showSuccessAlert();
+        }
+      };
+      xhr.send(formData);
+    });
+
+  function showSuccessAlert() {
+    var alertDiv = document.createElement("div");
+    alertDiv.classList.add(
+      "alert",
+      "alert-success",
+      "mt-3",
+      "position-fixed",
+      "top-0",
+      "start-50",
+      "translate-middle-x"
+    );
+    alertDiv.innerText = "글이 작성되었습니다.";
+    document.body.appendChild(alertDiv);
+  }
+</script>

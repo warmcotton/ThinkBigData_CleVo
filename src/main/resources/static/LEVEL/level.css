@@ -1,0 +1,161 @@
+/* COMMON */
+body {
+    
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+}
+
+.wrap {
+    display: flex;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.logo {
+    content: url(../img/Logo.png);
+    width: 255px;
+    height: 49.5px;
+    padding: 0 250px;
+    flex-direction: column;
+}
+
+/* CONTAINER */
+.container#select__category {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    height: 200px;
+    min-width: 450px;
+    top: 0;
+    bottom: 300px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 1px solid #f8f8f8;
+    border-radius: 30px;
+    
+    box-sizing: border-box;
+    background-color: #e1e1e1;
+}
+.container#select__level {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    width: 1000px;
+    height: 200px;
+    min-width: 450px;
+    top: 200px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 1px solid #f8f8f8;
+    border-radius: 30px;
+    
+    box-sizing: border-box;
+    background-color: #e1e1e1;
+}
+
+h3{
+    position: relative;
+    left: 50px;
+    top: 20px;
+    margin-bottom: 70px;
+}
+
+.content {
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+.content#select__level {
+    position: absolute;
+    top: 110px;
+    bottom: 0;
+    left: -180px;
+    right: 0;
+}
+
+button#submit {
+    cursor: pointer;
+    position: absolute;
+    bottom: 65px;
+    right: 260px;
+    width: 150px;
+    height: 45px;
+    border-radius: 7px;
+    font-size: 17px;
+    color: #f8f8f8;
+    background-color: #514D45;
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+}
+
+/**카테고리**/
+
+.content input[type=checkbox]{
+    display: none;
+}
+  
+.content input[type=checkbox]+label{
+    cursor: pointer;
+    margin-right: 10PX;
+    height: 30px;
+    width: 120px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    border: 1px solid #d9d6d6;
+    line-height: 24px;
+    text-align: center;
+    color: #383838;
+    font-weight:bold;
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+    padding : 9px 30px;
+    
+}
+  
+.content input[type=checkbox]+label{
+    background-color: #A6B782;
+    outline: 0.5px solid #56721C;
+    color: #fff;
+}
+.content input[type=checkbox]:checked+label{
+    
+    background-color: #6B8E23;
+    color: #fff;
+}
+
+/**레벨**/
+.content input[type=radio]{
+    display: none;
+}
+  
+.content input[type=radio]+label{
+    
+    height: 40px;
+    width: 49%;
+    cursor: pointer;
+    margin-right: 20PX;
+    box-sizing: border-box;
+    border-radius: 50px;
+    border: 1px solid #d9d6d6;
+    line-height: 24px;
+    text-align: center;
+    color: #383838;
+    font-weight:bold;
+    font-family: 'Montserrat', 'Pretendard', sans-serif;
+    padding : 20px 30px;
+    
+}
+  
+.content input[type=radio]+label{
+    background-color: #A6B782;
+    outline: 0.5px solid #56721C;
+    color: #fff;
+}
+.content input[type=radio]:checked+label{
+    
+    background-color: #6B8E23;
+    color: #fff;
+}

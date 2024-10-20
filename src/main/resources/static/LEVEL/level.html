@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleVo</title>
+    <link rel="stylesheet" href="level.css">
+    <script src="level.js" defer></script> 
+</head>
+<body>
+    <div class="wrap">
+        <img class="logo" alt="Logo" title="logo">
+        <div class="container" id="select__category">
+            <h3>학습을 원하는 카테고리를 모두 골라주세요.</h3>
+            <div class="content">
+                <section>
+                    <input type='checkbox' name='category' id='TOPIC1' /><label for='TOPIC1'>취미생활</label>
+                    <input type='checkbox' name='category' id='TOPIC2' /><label for='TOPIC2'>비즈니스</label>
+                    <input type='checkbox' name='category' id='TOPIC3' /><label for='TOPIC3'>해외여행</label>
+                    <input type='checkbox' name='category' id='TOPIC4' /><label for='TOPIC4'>일상생활</label>
+                    <input type='checkbox' name='category' id='TOPIC5' /><label for='TOPIC5'>쇼핑</label>
+                </section>
+            </div>
+        </div>
+        <div class="container" id="select__level">
+            <h3>학습을 원하는 레벨을 골라주세요.</h3>
+            <div class="content" id="select__level">
+                <section>
+                    <input type='radio' name='level' id='high' /><label for='high'>상</label>
+                    <input type='radio' name='level' id='medium' /><label for='medium'>중</label>
+                    <input type='radio' name='level' id='low' /><label for='low'>하</label>
+                </section>
+            </div>
+        </div>
+        <button id="submit">SUBMIT</button>
+    </div>
+</body>
+</html>

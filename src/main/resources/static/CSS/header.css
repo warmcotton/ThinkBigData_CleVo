@@ -1,0 +1,120 @@
+@import url('https://webfontworld.github.io/NexonLv1Gothic/NexonLv1Gothic.css');
+
+:root {
+    --primary-color: #6B8E23;
+    --secondary-color: #f1f1f1;
+    --text-color: #797979;
+    --font-size: 1em;
+}
+
+.nexon {
+    font-family: 'NexonLv1Gothic';
+    font-weight: 400;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+}
+a {
+    text-decoration: none;
+    color: #000;
+    margin-right: 80px;
+}
+li {
+    list-style: none;
+}
+em {
+    font-style: normal;
+}
+
+/* Header */
+.header__inner {
+    width: 100%;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    border-bottom: 1px solid #6B8E23;
+}
+.header__menu li {
+    display: inline;
+}
+.header__menu li a {
+    padding: 13px 25px;
+    margin: 0 15px;
+    transition: background-color 0.33s;
+}
+.header__menu li a:hover {
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+}
+.header__search {
+    width: 30%;
+    padding: 1%;
+    border: 1px solid #828282;
+    display: flex;
+    align-items: center;
+    margin-right: 100px;
+}
+.search_txt {
+    flex: 1;
+    border: none;
+    background: none;
+    outline: none;
+    padding: 0;
+    color: var(--text-color);
+    font-size: var(--font-size);
+}
+.search_btn {
+    width: 10%;
+    height: 100%;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    font-size: var(--font-size);
+    cursor: pointer;
+}
+.header__search .fa-magnifying-glass {
+    color: #828282; 
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header__inner {
+        flex-direction: column;
+        align-items: flex-start;
+        height: auto;
+        padding: 10px;
+    }
+    .header__menu {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 10px;
+    }
+    .header__menu li {
+        display: block;
+        width: 100%;
+        text-align: left;
+    }
+    .header__menu li a {
+        display: block;
+        width: 100%;
+        padding: 10px 20px;
+    }
+    .header__search {
+        width: 70%;
+        margin-bottom: 10px;
+    }
+    .header__member {
+        width: 100%;
+        padding: 5px 0;
+        margin-left: 85%;
+    }
+}
