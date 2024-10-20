@@ -149,10 +149,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
   downloadButton.addEventListener('click', () => {
-    // if (!wavBlob) {
-    //   alert('녹음된 파일이 없습니다.');
-    //   return;
-    // }
+     if (!audioBlob) {
+       alert('녹음된 파일이 없습니다.');
+       return;
+     }
     const audioUrl = URL.createObjectURL(audioBlob);
     const a = document.createElement('a');
     a.style.display = 'none';
