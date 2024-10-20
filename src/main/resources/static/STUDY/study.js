@@ -53,22 +53,25 @@ async function getUserData() {
 
   async function generateRandomSentences() {
     sentenceList.innerHTML = "";
-    const sentenceDto = localStorage.getItem("sentenceDto") ? JSON.parse(localStorage.getItem("sentenceDto")) : null;
 
     const userData = await getUserData();
         console.log(userData);
         if (!userData) return;
 
      let params = {};
-    if (sentenceDto) {
-      // Use sentenceDto data
-      params = {
-        topic: mapCategoryToTopic(sentenceDto.categories),
-        length: sentenceDto.level === 1 ? "5" : sentenceDto.level === 2 ? "10" : "15",
-        reference: sentenceDto.eng,
-        score1: sentenceDto.accuracy,
-        score2: sentenceDto.fluency,
-      };
+    if (localStorage.getItem("sentence_id")) {
+          // Use localStorage data if sentence_id exists
+          const accuracy = localStorage.getItem("accuracy");
+          const fluency = localStorage.getItem("fluency");
+          const selectedSentenceEng = localStorage.getItem("selectedSentenceEng");
+
+          params = {
+            topic: mapCategoryToTopic(userData.category),
+            length: userData.level === 1 ? "5" : userData.level === 2 ? "10" : "15",
+            reference: selectedSentenceEng,
+            score1: accuracy,
+            score2: fluency,
+          };
     } else {
       // Use user data
       params = {
