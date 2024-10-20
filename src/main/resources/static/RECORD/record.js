@@ -99,6 +99,13 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   nextBtn.addEventListener("click", async () => {
+      if ( nextBtn.disabled) {
+      	console.log("서버 통신 중");
+      	return;
+      }
+
+      // 버튼을 비활성화하여 중복 클릭 방지
+      nextBtn.disabled = true;
       const reader = new FileReader();
       reader.readAsDataURL(audioBlob);
       reader.onloadend = async () => {
@@ -144,6 +151,8 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 100);
       } catch (error) {
         console.error("Error during API request:", error);
+      nextBtn.disabled = false;
+
       }
     };
     });
@@ -153,6 +162,13 @@ document.addEventListener("DOMContentLoaded", () => {
        alert('녹음된 파일이 없습니다.');
        return;
      }
+      if ( downloadButton.disabled) {
+      	console.log("다운로드 중");
+      	return;
+      }
+
+      // 버튼을 비활성화하여 중복 클릭 방지
+      downloadButton.disabled = true;
     const audioUrl = URL.createObjectURL(audioBlob);
     const a = document.createElement('a');
     a.style.display = 'none';
