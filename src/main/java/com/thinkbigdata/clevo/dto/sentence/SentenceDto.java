@@ -19,4 +19,6 @@ public class SentenceDto {
     private String base64;
     private List<Category> categories;
     private Integer level;
+    private String difficulty;
+    private Integer length;
 }

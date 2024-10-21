@@ -54,4 +54,34 @@ public class PronounceApi {
 
         return Double.valueOf(value.get("score"));
     }
+
+    public String getSentenceScript(String base64) throws JsonProcessingException {
+        ObjectNode requests = JsonNodeFactory.instance.objectNode();
+        ObjectNode arguments = JsonNodeFactory.instance.objectNode();
+
+        arguments.put("language_code", "english");
+        arguments.put("audio", base64);
+        requests.put("argument", arguments);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", accessKey);
+
+        HttpEntity<JsonNode> requestEntity = new HttpEntity<>(requests, headers);
+
+        String result = restTemplate.exchange(PATH, HttpMethod.POST, requestEntity, String.class).getBody();
+
+        Map<String, Object> res = null;
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        res = objectMapper.readValue(result, Map.class);
+
+        if ((Integer) res.get("result") == -1 )
+            throw new RestClientException("API 호출 결과가 유효하지 않습니다.");
+
+        Map<String, String> value = (Map<String, String>) res.get("return_object");
+
+        return value.get("recognized");
+    }
 }
