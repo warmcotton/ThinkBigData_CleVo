@@ -5,10 +5,7 @@ import com.thinkbigdata.clevo.controller.LearningController;
 import com.thinkbigdata.clevo.controller.PostController;
 import com.thinkbigdata.clevo.controller.SentenceController;
 import com.thinkbigdata.clevo.controller.UserController;
-import com.thinkbigdata.clevo.exception.DuplicateEmailException;
-import com.thinkbigdata.clevo.exception.InsufficientUserInfoException;
-import com.thinkbigdata.clevo.exception.InvalidSessionException;
-import com.thinkbigdata.clevo.exception.RefreshTokenException;
+import com.thinkbigdata.clevo.exception.*;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +76,11 @@ public class ControllerHandler  {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<?> accessDenied(AccessDeniedException e) {
         return ResponseEntity.status(403).body(toMap(403, e.getMessage()));
+    }
+
+    @ExceptionHandler(PronounceEvaluationException.class)
+    public ResponseEntity<?> pronounceFail(PronounceEvaluationException e) {
+        return ResponseEntity.status(500).body(toMap(403, e.getMessage()));
     }
 
     private Map<String, Object> toMap(Integer code, String message) {
