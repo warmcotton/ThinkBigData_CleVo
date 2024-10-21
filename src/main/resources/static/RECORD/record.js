@@ -100,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   nextBtn.addEventListener("click", async () => {
       if ( nextBtn.disabled) {
-      	console.log("서버 통신 중");
       	return;
       }
 
@@ -114,8 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
               return;
             }
         const base64 = reader.result.split(',')[1];
-        console.log(base64);
-        console.log(englishSentence);
         if (!accessToken) {
                 console.error("Access token is missing");
                 return;
@@ -139,7 +136,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         const data = await response.json();
-        console.log("API response:", data);
         const { sentence_id, accuracy, fluency, vulnerable } = data;
 
         localStorage.setItem("sentence_id", sentence_id);
@@ -164,7 +160,6 @@ document.addEventListener("DOMContentLoaded", () => {
        return;
      }
       if ( downloadButton.disabled) {
-      	console.log("다운로드 중");
       	return;
       }
 

@@ -10,12 +10,10 @@ const signInBtn = document.querySelector('#signin')
 
 idInputEl.addEventListener('change', () => {
   account.email = idInputEl.value
-  console.log(Object.values(account))
 });
 
 pwInputEl.addEventListener('change', () => {
   account.pw = pwInputEl.value
-  console.log(Object.values(account))
 });
 
 signInBtn.addEventListener('click', async () => {

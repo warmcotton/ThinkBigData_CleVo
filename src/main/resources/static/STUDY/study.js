@@ -44,7 +44,6 @@ async function getUserData() {
     sentenceList.innerHTML = "";
 
     const userData = await getUserData();
-        console.log(userData);
         if (!userData) return;
 
      let params = {};
@@ -73,7 +72,6 @@ async function getUserData() {
 
     // Generate sentences using API
     const result = await generateSentences(params);
-    console.log("Generated sentences result:", result);
 
     // Populate sentence list with generated sentences
     const sentences = result.sentences;
@@ -82,7 +80,6 @@ async function getUserData() {
     for (let i = 1; i <= Object.keys(sentences).length; i++) {
       const li = document.createElement("li");
       li.textContent = sentences[`sen${i}`];
-      console.log("Adding sentence to list:", sentences[`sen${i}`]);  // 로그 추가
       li.addEventListener("click", () => {
         localStorage.setItem("selectedSentenceEng", sentences[`sen${i}`]);
         localStorage.setItem("selectedSentenceKor", translations[`sen_trans_${i}`]);
