@@ -44,8 +44,25 @@ public class BasicEntityService {
             categories.add(userTopic.getTopic().getCategory());
         }
         UserImage userImage = userImageRepository.findByUser(user).get();
+        String difficulty = null;
+        Integer length = null;
+        if (user.getLevel() != null) {
+            switch (user.getLevel()) {
+                case 1:
+                    difficulty = "하";
+                    length = 7;
+                    break;
+                case 2:
+                    difficulty = "중";
+                    length = 10;
+                    break;
+                case 3:
+                    difficulty = "상";
+                    length = 15;
+            }
+        }
         return UserDto.builder().email(user.getEmail()).name(user.getName()).nickname(user.getNickname()).birth(user.getBirth())
-                .gender(user.getGender()).level(user.getLevel()).target(user.getTarget()).role(user.getRole()).img_path(userImage.getPath())
+                .gender(user.getGender()).level(user.getLevel()).difficulty(difficulty).length(length).target(user.getTarget()).role(user.getRole()).img_path(userImage.getPath())
                 .category(categories).created_date(user.getDate()).lastLogin_date(user.getLast()).build();
     }
 
@@ -60,8 +77,25 @@ public class BasicEntityService {
         for (SentenceTopic s : sts) {
             categories.add(s.getTopic().getCategory());
         }
+        String difficulty = null;
+        Integer length = null;
+        if (sentence.getLevel() != null) {
+            switch (sentence.getLevel()) {
+                case 1:
+                    difficulty = "하";
+                    length = 7;
+                    break;
+                case 2:
+                    difficulty = "중";
+                    length = 10;
+                    break;
+                case 3:
+                    difficulty = "상";
+                    length = 15;
+            }
+        }
         return SentenceDto.builder().id(sentence.getId()).eng(sentence.getEng()).kor(sentence.getKor())
-                .level(sentence.getLevel()).categories(categories).build();
+                .level(sentence.getLevel()).difficulty(difficulty).length(length).categories(categories).build();
     }
 
     public LearningLog getLearningLog(Integer logId) {

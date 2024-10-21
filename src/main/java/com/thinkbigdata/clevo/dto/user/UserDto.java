@@ -17,6 +17,8 @@ public class UserDto {
     private LocalDate birth;
     private String gender;
     private Integer level;
+    private String difficulty;
+    private Integer length;
     private Integer target;
     private Role role;
     private String img_path;
