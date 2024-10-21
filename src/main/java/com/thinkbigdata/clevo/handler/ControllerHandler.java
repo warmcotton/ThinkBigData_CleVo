@@ -80,7 +80,7 @@ public class ControllerHandler  {
 
     @ExceptionHandler(PronounceEvaluationException.class)
     public ResponseEntity<?> pronounceFail(PronounceEvaluationException e) {
-        return ResponseEntity.status(500).body(toMap(403, e.getMessage()));
+        return ResponseEntity.status(500).body(toMap(500, e.getMessage()));
     }
 
     private Map<String, Object> toMap(Integer code, String message) {
