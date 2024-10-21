@@ -14,6 +14,7 @@ public class LearningLogDto {
     private SentenceDto sentenceDto;
     private Double accuracy;
     private Double fluency;
+    private String vulnerable;
     private Double total_score;
     private LocalDateTime date;
 }

@@ -24,6 +24,8 @@ public class LearningLog {
     private Double accuracy;
     @Column(name = "Learning_log_fluency", nullable = false)
     private Double fluency;
+    @Column(name = "Learning_log_vulnerable", nullable = false)
+    private String vulnerable;
     @Column(name = "Learning_log_total_score", nullable = false)
     private Double totalScore;
     @CreatedDate @Column(name = "Learning_log_date", nullable = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

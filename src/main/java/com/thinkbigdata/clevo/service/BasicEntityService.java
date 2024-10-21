@@ -72,7 +72,7 @@ public class BasicEntityService {
     public LearningLogDto getLearningLogDto(LearningLog learningLog, SentenceDto sentenceDto) {
         return LearningLogDto.builder().id(learningLog.getId()).email(learningLog.getUser().getEmail())
                 .sentence_id(learningLog.getSentence().getId()).sentenceDto(sentenceDto)
-                .accuracy(learningLog.getAccuracy()).fluency(learningLog.getFluency())
+                .accuracy(learningLog.getAccuracy()).fluency(learningLog.getFluency()).vulnerable(learningLog.getVulnerable())
                 .total_score(learningLog.getTotalScore()).date(learningLog.getDate()).build();
     }
 

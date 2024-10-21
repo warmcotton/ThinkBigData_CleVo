@@ -5,6 +5,7 @@ import com.thinkbigdata.clevo.dto.sentence.LearningLogDto;
 import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
 import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.exception.InsufficientUserInfoException;
+import com.thinkbigdata.clevo.exception.PronounceEvaluationException;
 import com.thinkbigdata.clevo.service.LearningService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,13 @@ public class LearningController {
     private final LearningService learningService;
 
     @PostMapping("/learning/sentence/score")
-    public ResponseEntity<LearningLogDto> getRandomSentenceResult(@RequestBody @Valid SentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException {
+    public ResponseEntity<LearningLogDto> getRandomSentenceResult(@RequestBody @Valid SentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException, PronounceEvaluationException {
         LearningLogDto result = learningService.getRandomSentenceResult(authentication.getName(), sentence);
         return ResponseEntity.ok(result);
     }
 
     @PostMapping("/learning/user-sentence/score")
-    public ResponseEntity<LearningLogDto> getUserSentenceResult(@RequestBody @Valid UserSentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException {
+    public ResponseEntity<LearningLogDto> getUserSentenceResult(@RequestBody @Valid UserSentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException, PronounceEvaluationException {
         LearningLogDto result = learningService.getUserSentenceResult(authentication.getName(), sentence);
         return ResponseEntity.ok(result);
     }

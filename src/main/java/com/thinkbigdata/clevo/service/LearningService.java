@@ -6,8 +6,11 @@ import com.thinkbigdata.clevo.dto.sentence.SentenceDto;
 import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.entity.*;
 import com.thinkbigdata.clevo.exception.InsufficientUserInfoException;
+import com.thinkbigdata.clevo.exception.PronounceEvaluationException;
 import com.thinkbigdata.clevo.repository.*;
 import com.thinkbigdata.clevo.util.pronounce.PronounceApi;
+import com.thinkbigdata.clevo.util.pronounce.PronunciationEvaluator;
+import static com.thinkbigdata.clevo.util.pronounce.PronunciationEvaluator.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -25,17 +28,18 @@ public class LearningService {
     private final SentenceTopicRepository sentenceTopicRepository;
     private final UserTopicRepository userTopicRepository;
     private final PronounceApi pronounceApi;
+    private final PronunciationEvaluator pronunciationEvaluator;
 
-    public LearningLogDto getRandomSentenceResult(String email, SentenceDto sentence) throws JsonProcessingException, InsufficientUserInfoException {
+    public LearningLogDto getRandomSentenceResult(String email, SentenceDto sentence) throws JsonProcessingException, InsufficientUserInfoException, PronounceEvaluationException {
         User user = basicEntityService.getUserByEmail(email);
         // user info 예외처리
         if (userTopicRepository.findByUser(user).size() == 0 || user.getLevel() == null) throw new InsufficientUserInfoException("학습을 위해 필요한 사용자 정보가 부족합니다");
 
-        double score = pronounceApi.getSentenceScore(sentence.getEng(), sentence.getBase64());
-        double acr = (((int) (Math.random() * 11) - 5) / 10.0);
-        double fcr = (((int) (Math.random() * 11) - 5) / 10.0);
-        double accuracy = score + acr > 5.0 ? 5.0 : (score + acr < 1.0 ? 1.0 : score + acr);
-        double fluency = score + fcr > 5.0 ? 5.0 : (score + fcr < 1.0 ? 1.0 : score + fcr);
+        String recognized = pronounceApi.getSentenceScript(sentence.getBase64());
+        Result result = pronunciationEvaluator.evaluatePronunciation(recognized, sentence.getEng());
+        double fluency = pronounceApi.getSentenceScore(sentence.getEng(), sentence.getBase64());
+        double accuracy = result.getScore2();
+        String vulnerable = result.getVulnerable();
         double totalScore = (accuracy + fluency) / 2.0;
 
         Optional<Sentence> optst = sentenceRepository.findByEng(sentence.getEng());
@@ -61,13 +65,13 @@ public class LearningService {
         } else {
             st = optst.get();
         }
-        LearningLog log = LearningLog.builder().user(user).sentence(st).accuracy(accuracy).fluency(fluency).totalScore(totalScore).build();
+        LearningLog log = LearningLog.builder().user(user).sentence(st).accuracy(accuracy).fluency(fluency).vulnerable(vulnerable).totalScore(totalScore).build();
         learningLogRepository.save(log);
 
         return basicEntityService.getLearningLogDto(log, basicEntityService.getSentenceDto(st));
     }
 
-    public LearningLogDto getUserSentenceResult(String email, UserSentenceDto userSentenceDto) throws JsonProcessingException, InsufficientUserInfoException {
+    public LearningLogDto getUserSentenceResult(String email, UserSentenceDto userSentenceDto) throws JsonProcessingException, InsufficientUserInfoException, PronounceEvaluationException {
         User user = basicEntityService.getUserByEmail(email);
         // user info 예외처리
         if (userTopicRepository.findByUser(user).size() == 0 || user.getLevel() == null) throw new InsufficientUserInfoException("학습을 위해 필요한 사용자 정보가 부족합니다");
@@ -75,14 +79,14 @@ public class LearningService {
         Sentence sentence = basicEntityService.getSentence(userSentenceDto.getSentence_id());
         UserSentence userSentence = basicEntityService.getUserSentence(user, sentence);
 
-        double score = pronounceApi.getSentenceScore(sentence.getEng(), userSentenceDto.getBase64());
-        double acr = (((int) (Math.random() * 11) - 5) / 10.0);
-        double fcr = (((int) (Math.random() * 11) - 5) / 10.0);
-        double accuracy = score + acr > 5.0 ? 5.0 : (score + acr < 1.0 ? 1.0 : score + acr);
-        double fluency = score + fcr > 5.0 ? 5.0 : (score + fcr < 1.0 ? 1.0 : score + fcr);
+        String recognized = pronounceApi.getSentenceScript(userSentenceDto.getBase64());
+        Result result = pronunciationEvaluator.evaluatePronunciation(recognized, sentence.getEng());
+        double fluency = pronounceApi.getSentenceScore(sentence.getEng(), userSentenceDto.getBase64());
+        double accuracy = result.getScore2();
+        String vulnerable = result.getVulnerable();
         double totalScore = (accuracy + fluency) / 2.0;
 
-        LearningLog log = LearningLog.builder().user(user).sentence(sentence).accuracy(accuracy).fluency(fluency).totalScore(totalScore).build();
+        LearningLog log = LearningLog.builder().user(user).sentence(sentence).accuracy(accuracy).fluency(fluency).vulnerable(vulnerable).totalScore(totalScore).build();
         learningLogRepository.save(log);
 
         return basicEntityService.getLearningLogDto(log, basicEntityService.getSentenceDto(sentence));
