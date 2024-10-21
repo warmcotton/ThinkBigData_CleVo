@@ -15,7 +15,7 @@ async function getUserData() {
       });
       if (!response.ok) throw new Error("Failed to fetch user data");
       const userData = await response.json();
-      userNameElement.textContent = userData.name;
+      userNameElement.textContent = userData.nickname;
 
       return userData;
     } catch (error) {

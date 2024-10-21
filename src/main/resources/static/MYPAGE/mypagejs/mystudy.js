@@ -35,7 +35,7 @@ async function fetchDashboardData() {
 
 function updateUserData(data) {
     // Update userData object with fetched data
-    userData.username = data.user.name;
+    userData.username = data.user.nickname;
 
     // Update recent sentence with the most recent learning log's data
     const latestLog = data.learning_logs.content[0];

@@ -2,9 +2,9 @@
 const errMsg = {
   id: { 
     invalid: "10자 이내로 입력해주세요",
-    success: "사용 가능한 아이디입니다",
-    fail: "사용할 수 없는 아이디입니다",
-    check: "아이디 중복 확인을 해주세요"  // 추가된 메시지
+    success: "사용 가능한 별명입니다",
+    fail: "사용할 수 없는 별명입니다",
+    check: "별명 중복 확인을 해주세요"  // 추가된 메시지
   },
   pw: "8~20자의 영문, 숫자, 특수문자를 모두 포함한 비밀번호를 입력해주세요",
   pwRe: {
@@ -292,7 +292,7 @@ submitBtn.addEventListener('click', async function() {
   const word = {  
     pw: "비밀번호를",
     email: "이메일을",
-    id: "아이디를",
+    id: "별명을",
     birth: "생년월일을",
     name: "이름을",
     gender: "성별을"  // 추가된 필드
@@ -322,7 +322,7 @@ submitBtn.addEventListener('click', async function() {
             password1: account.pw,
             password2: account.pw,
             name: account.name,
-            nickname: account.name,
+            nickname: account.id,
             birth: account.birth,
             gender: account.gender
           };
