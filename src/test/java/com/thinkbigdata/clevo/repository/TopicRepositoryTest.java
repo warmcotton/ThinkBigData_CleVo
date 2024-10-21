@@ -28,7 +28,7 @@ class TopicRepositoryTest {
     @Test
     void save() {
         Topic topic = new Topic();
-        topic.setCategory(Category.TOPIC2);
+        topic.setCategory(Category.BUSINESS);
 
         Topic savedTopic = topicRepository.save(topic);
         testEntityManager.flush();
@@ -42,11 +42,11 @@ class TopicRepositoryTest {
     @Test
     void save_duplicate_topic_name() {
         Topic topic = new Topic();
-        topic.setCategory(Category.TOPIC1);
+        topic.setCategory(Category.HOBBY);
         topicRepository.save(topic);
 
         Topic newtopic = new Topic();
-        newtopic.setCategory(Category.TOPIC1);
+        newtopic.setCategory(Category.HOBBY);
         assertThrows(DataIntegrityViolationException.class, () -> {
             topicRepository.save(newtopic);
         });

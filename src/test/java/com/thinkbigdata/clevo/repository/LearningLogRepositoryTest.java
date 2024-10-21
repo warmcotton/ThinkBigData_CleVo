@@ -54,7 +54,7 @@ class LearningLogRepositoryTest {
         testEntityManager.flush();
     }
     void saveSentence() {
-        Topic topic = topicRepository.findByCategory(Category.TOPIC1).get();
+        Topic topic = topicRepository.findByCategory(Category.HOBBY).get();
         Sentence sentence = new Sentence();
         sentence.setEng("test Sentence");
         sentence.setKor("테스트 문장");

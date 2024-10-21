@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Optional;
 
@@ -55,7 +54,7 @@ class UserSentenceRepositoryTest {
         testEntityManager.flush();
     }
     void saveSentence() {
-        Topic topic = topicRepository.findByCategory(Category.TOPIC1).get();
+        Topic topic = topicRepository.findByCategory(Category.HOBBY).get();
         Sentence sentence = new Sentence();
         sentence.setEng("test Sentence");
         sentence.setKor("테스트 문장");

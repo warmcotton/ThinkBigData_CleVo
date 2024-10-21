@@ -42,7 +42,7 @@ public class SentenceRepositoryTest {
 
     @Test
     void save() {
-        Optional<Topic> topic = topicRepository.findByCategory(Category.TOPIC1);
+        Optional<Topic> topic = topicRepository.findByCategory(Category.HOBBY);
         Sentence sentence = new Sentence();
 
         sentence.setEng("test Sentence");

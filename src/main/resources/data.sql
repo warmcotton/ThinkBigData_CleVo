@@ -1,10 +1,10 @@
 INSERT INTO Topics (Topic_category)
 VALUES
-('TOPIC1'),
-('TOPIC2'),
-('TOPIC3'),
-('TOPIC4'),
-('TOPIC5');
+('HOBBY'),
+('BUSINESS'),
+('TRAVEL'),
+('DAILY'),
+('SHOPPING');
 
 INSERT INTO Sentences (Sentence_eng, Sentence_kor, Sentence_level)
 VALUES

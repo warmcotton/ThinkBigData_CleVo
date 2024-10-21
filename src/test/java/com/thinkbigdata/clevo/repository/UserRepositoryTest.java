@@ -114,8 +114,8 @@ public class UserRepositoryTest {
         User savedUser = userRepository.save(user);
         testEntityManager.flush();
 
-        Topic topic1 = topicRepository.findByCategory(Category.TOPIC1).get();
-        Topic topic2 = topicRepository.findByCategory(Category.TOPIC2).get();
+        Topic topic1 = topicRepository.findByCategory(Category.HOBBY).get();
+        Topic topic2 = topicRepository.findByCategory(Category.BUSINESS).get();
 
         UserTopic userTopic1 = new UserTopic();
         userTopic1.setUser(savedUser);
