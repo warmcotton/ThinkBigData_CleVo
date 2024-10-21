@@ -2,17 +2,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sentenceList = document.getElementById("sentence-list");
   const generateBtn = document.getElementById("generate-btn");
 
-    function mapCategoryToTopic(categories) {
-      const categoryMap = {
-        TOPIC1: "hobby",
-        TOPIC2: "business",
-        TOPIC3: "travel",
-        TOPIC4: "dailylife",
-        TOPIC5: "shopping",
-      };
-      return categories.map((cat) => categoryMap[cat]).join(", ");
-    }
-
 async function getUserData() {
     const userNameElement = document.getElementById("user_id");
 
@@ -64,19 +53,21 @@ async function getUserData() {
           const accuracy = localStorage.getItem("accuracy");
           const fluency = localStorage.getItem("fluency");
           const selectedSentenceEng = localStorage.getItem("selectedSentenceEng");
+          const vulnerable = localStorage.getItem("vulnerable");
 
           params = {
-            topic: mapCategoryToTopic(userData.category),
-            length: userData.level === 1 ? "5" : userData.level === 2 ? "10" : "15",
+            topic: userData.category,
+            length: userData.length,
             reference: selectedSentenceEng,
             score1: accuracy,
             score2: fluency,
+            vulnerable: vulnerable,
           };
     } else {
       // Use user data
       params = {
-        topic: mapCategoryToTopic(userData.category),
-        length: userData.level === 1 ? "5" : userData.level === 2 ? "10" : "15",
+        topic: userData.category,
+        length: userData.length,
       };
     }
 

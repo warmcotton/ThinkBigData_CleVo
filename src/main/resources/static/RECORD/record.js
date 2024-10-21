@@ -140,11 +140,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await response.json();
         console.log("API response:", data);
-        const { sentence_id, accuracy, fluency } = data;
+        const { sentence_id, accuracy, fluency, vulnerable } = data;
 
         localStorage.setItem("sentence_id", sentence_id);
         localStorage.setItem("accuracy", accuracy);
         localStorage.setItem("fluency", fluency);
+        localStorage.setItem("vulnerable", vulnerable);
 
         setTimeout(() => {
           window.location.href = "/SCORE/score.html";
