@@ -2,9 +2,9 @@
 const errMsg = {
   id: { 
     invalid: "10자 이내로 입력해주세요",
-    success: "사용 가능한 아이디입니다",
-    fail: "사용할 수 없는 아이디입니다",
-    check: "아이디 중복 확인을 해주세요"  // 추가된 메시지
+    success: "사용 가능한 별명입니다",
+    fail: "사용할 수 없는 별명입니다",
+    check: "별명 중복 확인을 해주세요"  // 추가된 메시지
   },
   pw: "8~20자의 영문, 숫자, 특수문자를 모두 포함한 비밀번호를 입력해주세요",
   pwRe: {
@@ -43,7 +43,6 @@ idInputEl.addEventListener('change', () => {
     idErrorMsgEl.textContent = errMsg.id.invalid
     account.id = null
   }
-  console.log(account)
 });
 
 idCheckBtn.addEventListener('click', () => {
@@ -97,7 +96,6 @@ pwInputEl.addEventListener('change', () => {
     pwErrorMsgEl.textContent = errMsg.pw
   }
   checkPwValid()
-  console.log(pwVal, pwReVal, isPwValid, account)
 });
 
 /*** SECTION - PASSWORD RECHECK ***/
@@ -106,7 +104,6 @@ const pwReErrorMsgEl = document.querySelector('#info__pwRe .error-msg')
 pwReInputEl.addEventListener('change', () => {
   pwReVal = pwReInputEl.value
   checkPwValid()
-  console.log(pwVal, pwReVal, isPwValid, account)
 });
 
 /*** SECTION - EMAIL ***/
@@ -123,14 +120,12 @@ const emailInputEl = document.querySelector('#email-txt')
 emailInputEl.addEventListener('change', () => {
   emailList[0] = emailInputEl.value
   checkEmailValid()
-  console.log(account, emailList)
 })
 
 const domainInputEl = document.querySelector('#domain-txt')
 domainInputEl.addEventListener('change', () => {
   emailList[1] = domainInputEl.value
   checkEmailValid()
-  console.log(account, emailList)
 })
 
 // 도메인 직접 입력 or domain option 선택
@@ -150,7 +145,6 @@ domainListEl.addEventListener('change', () => {
     emailList[1] = ""
   }
   checkEmailValid()
-  console.log(account, emailList)
 })
 
 
@@ -213,7 +207,6 @@ birthYearEl.addEventListener('change', () => {
   birthArr[0] = birthYearEl.value
   birthYearEl.style.color = "#383838"
   checkBirthValid(birthArr)
-  console.log(account, birthArr)
 });
 
 // 월 select box
@@ -238,7 +231,6 @@ birthMonthEl.addEventListener('change', () => {
   birthArr[1] = birthMonthEl.value
   birthMonthEl.style.color = "#383838"
   checkBirthValid(birthArr)
-  console.log(account, birthArr)
 });
 
 // 일 select box
@@ -263,7 +255,6 @@ birthDayEl.addEventListener('change', () => {
   birthArr[2] = birthDayEl.value
   birthDayEl.style.color = "#383838"
   checkBirthValid(birthArr)
-  console.log(account, birthArr)
 });
 
 /*** GENDER ***/
@@ -272,7 +263,6 @@ genderInputs.forEach(input => {
   input.addEventListener('change', () => {
     if (input.checked) {
       account.gender = input.id;
-      console.log(account);
     }
   });
 });
@@ -281,7 +271,6 @@ genderInputs.forEach(input => {
 const nameInputEl = document.querySelector('#info__name input');
 nameInputEl.addEventListener('change', () => {
   account.name = nameInputEl.value.trim() !== "" ? nameInputEl.value : null;
-  console.log(account);
 });
 
 /*** SUBMIT ***/
@@ -292,7 +281,7 @@ submitBtn.addEventListener('click', async function() {
   const word = {  
     pw: "비밀번호를",
     email: "이메일을",
-    id: "아이디를",
+    id: "별명을",
     birth: "생년월일을",
     name: "이름을",
     gender: "성별을"  // 추가된 필드
@@ -322,7 +311,7 @@ submitBtn.addEventListener('click', async function() {
             password1: account.pw,
             password2: account.pw,
             name: account.name,
-            nickname: account.name,
+            nickname: account.id,
             birth: account.birth,
             gender: account.gender
           };
@@ -341,9 +330,6 @@ submitBtn.addEventListener('click', async function() {
       if (response.ok) {
         // 세션 ID 가져오기
         const sessionId = response.headers.get('sessionId');
-
-        console.log('응답 데이터:', data);
-        console.log('세션 ID:', sessionId);
 
         // 성공적으로 회원가입이 완료되면 다음 페이지로 이동
         if (data && sessionId) {
