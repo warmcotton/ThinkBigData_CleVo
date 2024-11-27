@@ -7,6 +7,7 @@ import com.thinkbigdata.clevo.dto.sentence.UserSentenceDto;
 import com.thinkbigdata.clevo.entity.Sentence;
 import com.thinkbigdata.clevo.service.SentenceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -33,14 +34,14 @@ public class SentenceController {
     }
 
     @GetMapping("/sentence/user/sentences")
-    public ResponseEntity<CustomPage<UserSentenceDto>> getUserSentences(Authentication authentication, @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
-        CustomPage<UserSentenceDto> userSentences = sentenceService.getUserSentences(authentication.getName(), pageable);
+    public ResponseEntity<Page<UserSentenceDto>> getUserSentences(Authentication authentication, @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<UserSentenceDto> userSentences = sentenceService.getUserSentences(authentication.getName(), pageable);
         return ResponseEntity.ok(userSentences);
     }
 
     @GetMapping("/sentence/user/logs")
-    public ResponseEntity<CustomPage<LearningLogDto>> getUserLogs(Authentication authentication, @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
-        CustomPage<LearningLogDto> learningLogs = sentenceService.getUserLogs(authentication.getName(), pageable);
+    public ResponseEntity<Page<LearningLogDto>> getUserLogs(Authentication authentication, @PageableDefault(sort = "date", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<LearningLogDto> learningLogs = sentenceService.getUserLogs(authentication.getName(), pageable);
         return ResponseEntity.ok(learningLogs);
     }
 

@@ -10,13 +10,17 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 @Service
 @Transactional
@@ -31,7 +35,7 @@ public class SentenceService {
         return basicEntityService.getSentenceDto(basicEntityService.getSentence(sentenceId));
     }
 
-    public CustomPage<UserSentenceDto> getUserSentences(String email, Pageable page) {
+    public Page<UserSentenceDto> getUserSentences(String email, Pageable page) {
         User user = basicEntityService.getUserByEmail(email);
 
         List<UserSentenceDto> userSentences = new ArrayList<>();
@@ -46,12 +50,10 @@ public class SentenceService {
             }
             userSentences.add(basicEntityService.getUserSentenceDto(userSentence, sentenceDto, logDtoList));
         }
-        return new CustomPage<>(userSentences, userSentenceList.getPageable(),
-                userSentenceList.isLast(), userSentenceList.getTotalElements(), userSentenceList.getTotalPages(), userSentenceList.getSize(),
-                userSentenceList.getNumber(), userSentenceList.getSort(), userSentenceList.isFirst(),userSentenceList.getNumberOfElements(), userSentenceList.isEmpty());
+        return new PageImpl<>(userSentences, userSentenceList.getPageable(), userSentenceList.getTotalElements());
     }
 
-    public CustomPage<LearningLogDto> getUserLogs(String email, Pageable page) {
+    public Page<LearningLogDto> getUserLogs(String email, Pageable page) {
         User user = basicEntityService.getUserByEmail(email);
 
         List<LearningLogDto> userLogs = new ArrayList<>();
@@ -60,8 +62,7 @@ public class SentenceService {
             LearningLogDto lld = basicEntityService.getLearningLogDto(learningLog, basicEntityService.getSentenceDto(learningLog.getSentence()));
             userLogs.add(lld);
         }
-        return new CustomPage<>(userLogs, learningLogs.getPageable(), learningLogs.isLast(), learningLogs.getTotalElements(), learningLogs.getTotalPages(), learningLogs.getSize(),
-                learningLogs.getNumber(), learningLogs.getSort(), learningLogs.isFirst(), learningLogs.getNumberOfElements(), learningLogs.isEmpty());
+        return new PageImpl<>(userLogs, learningLogs.getPageable(), learningLogs.getTotalElements());
     }
 
     public void deleteUserSentenceById(Integer sentenceId, String email) {
