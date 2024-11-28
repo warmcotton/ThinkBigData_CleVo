@@ -11,7 +11,7 @@ import org.hibernate.annotations.DynamicInsert;
 @Getter @Setter
 @DynamicInsert
 public class UserImage {
-    @Id @Column(name = "User_Image_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "User_Image_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @JoinColumn(name = "User_id", nullable = false) @OneToOne(fetch = FetchType.LAZY)
     private User user;

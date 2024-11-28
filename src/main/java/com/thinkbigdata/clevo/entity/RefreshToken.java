@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "RefreshToken")
 @Getter @Setter
 public class RefreshToken {
-    @Id @Column(name = "RefreshToken_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "RefreshToken_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "RefreshToken_value", nullable = false)
     private String value;

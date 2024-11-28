@@ -3,10 +3,11 @@ spring:
     name: CleVo
   config:
     import:
+      - classpath:/yaml/application-prod.yml
       - classpath:/yaml/application-dev.yml
       - classpath:/yaml/application-test.yml
   profiles:
-    active: dev
+    active: prod
   mvc:
     static-path-pattern: /**
   resources:

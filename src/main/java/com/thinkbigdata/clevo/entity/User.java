@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Getter @Setter @NoArgsConstructor
 public class User {
-    @Id @Column(name = "User_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "User_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "User_email", nullable = false, unique = true)
     private String email;

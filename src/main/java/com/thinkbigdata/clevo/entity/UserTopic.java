@@ -8,7 +8,7 @@ import lombok.Setter;
 @Table(name = "UserTopic")
 @Getter @Setter
 public class UserTopic {
-    @Id @Column(name = "UserTopic_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "UserTopic_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @JoinColumn(name = "User_id", nullable = false) @ManyToOne(fetch = FetchType.LAZY)
     private User user;

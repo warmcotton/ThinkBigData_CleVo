@@ -4,6 +4,13 @@ spring:
       on-profile: dev
     import:
       - classpath:/yaml/env.yml
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:test
+    username: sa
+    password:
+  jackson:
+    time-zone: Asia/Seoul
   h2:
     console:
       enabled: true
@@ -23,10 +30,9 @@ spring:
   devtools:
     restart:
       enabled: true
-  data:
-    redis:
-      host: localhost
-      port: 6379
+  redis:
+    host: localhost
+    port: 6379
   servlet:
     multipart:
       max-file-size: 50MB

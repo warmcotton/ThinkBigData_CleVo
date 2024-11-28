@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter @Setter @Builder
 @NoArgsConstructor @AllArgsConstructor
 public class LearningLog {
-    @Id @Column(name = "Learning_log_id") @GeneratedValue(strategy = GenerationType.AUTO)
+    @Id @Column(name = "Learning_log_id") @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @JoinColumn(name = "User_id", nullable = false) @ManyToOne(fetch = FetchType.LAZY)
     private User user;

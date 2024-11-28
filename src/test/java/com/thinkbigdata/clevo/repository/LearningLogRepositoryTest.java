@@ -79,6 +79,7 @@ class LearningLogRepositoryTest {
         learningLog.setAccuracy(5.0);
         learningLog.setFluency(3.0);
         learningLog.setTotalScore(8.0);
+        learningLog.setVulnerable("");
         LearningLog savedLog = learningLogRepository.save(learningLog);
 
         System.out.println(savedLog.getUser().getEmail());

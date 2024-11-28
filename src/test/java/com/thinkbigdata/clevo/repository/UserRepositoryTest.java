@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.AutoConfigureTestEntityManager;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -91,12 +92,11 @@ public class UserRepositoryTest {
         newuser.setName("Name");
         newuser.setNickname("NickName");
         newuser.setRole(Role.USER);
-        user.setBirth(LocalDate.now());
+        newuser.setBirth(LocalDate.now());
         newuser.setGender("M");
 
-        userRepository.save(newuser);
-        assertThrows(ConstraintViolationException.class, () -> {
-            testEntityManager.flush();
+        assertThrows(DataIntegrityViolationException.class, () -> {
+            userRepository.save(newuser);
         });
     }
 
