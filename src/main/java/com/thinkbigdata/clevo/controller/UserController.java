@@ -33,7 +33,7 @@ public class UserController {
     private final PostService postService;
 
     @PostMapping ("/signup/user")
-    public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserRegistrationDto registerDto) throws DuplicateEmailException {
+    public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserRegistrationDto registerDto) {
         if (!registerDto.getPassword2().equals(registerDto.getPassword1()))
             throw new IllegalArgumentException("등록할 비밀번호가 일치하지 않습니다.");
 
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @PostMapping ("/signup/info")
-    public ResponseEntity<UserDto> addUserInfo(@RequestHeader("sessionId") String sessionId, @RequestBody @Valid UserInfoDto userInfoDto) throws InvalidSessionException {
+    public ResponseEntity<UserDto> addUserInfo(@RequestHeader("sessionId") String sessionId, @RequestBody @Valid UserInfoDto userInfoDto) {
         if (sessionId.isBlank())
             throw new IllegalArgumentException("sessionId 정보가 유효하지 않습니다.");
 
@@ -84,7 +84,7 @@ public class UserController {
     }
 
     @PutMapping("/user-profile")
-    public ResponseEntity<UserDto> updateUserProfile(Authentication authentication, @RequestPart(required = false) @Valid UserProfileUpdateDto updateDto, @RequestPart(required = false) MultipartFile userImage) throws IOException {
+    public ResponseEntity<UserDto> updateUserProfile(Authentication authentication, @RequestPart(required = false) @Valid UserProfileUpdateDto updateDto, @RequestPart(required = false) MultipartFile userImage) {
         UserDto userDto = userService.updateUserProfile(authentication.getName(), updateDto, userImage);
         return ResponseEntity.ok(userDto);
     }
@@ -144,7 +144,7 @@ public class UserController {
     }
 
     @PostMapping("/refresh/token")
-    public ResponseEntity<TokenDto> refreshToken(@RequestBody Map<String, String> token) throws RefreshTokenException {
+    public ResponseEntity<TokenDto> refreshToken(@RequestBody Map<String, String> token) {
         if (!token.containsKey("refresh"))
             throw new IllegalArgumentException("refresh 정보가 유효하지 않습니다.");
         if (token.get("refresh") == null)

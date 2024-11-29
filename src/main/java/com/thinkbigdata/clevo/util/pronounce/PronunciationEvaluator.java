@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @Component
 @RequiredArgsConstructor
 public class PronunciationEvaluator {
-    public Result evaluatePronunciation(String pronSentence, String originalSentence) throws PronounceEvaluationException {
+    public Result evaluatePronunciation(String pronSentence, String originalSentence) {
         pronSentence = pronSentence.replaceAll("[.?!,]", "").toLowerCase();
         originalSentence = originalSentence.replaceAll("[.?!,]", "").toLowerCase();
 
@@ -94,7 +94,7 @@ public class PronunciationEvaluator {
         return new Result(score2, vulnerable);
     }
 
-    private static List<String> toPhonemes(String sentence) throws PronounceEvaluationException {
+    private static List<String> toPhonemes(String sentence) {
         try (InputStream in = CleVoApplication.class.getResourceAsStream("/cmudict-0.7b");
              BufferedReader reader = new BufferedReader(new InputStreamReader(in))) {
             Map<String, String> dictionary = reader.lines()

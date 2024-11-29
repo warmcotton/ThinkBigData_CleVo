@@ -88,7 +88,7 @@ public class UserService {
         return basicEntityService.getUserDto(savedUser);
     }
 
-    public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) throws InvalidSessionException {
+    public UserDto addUserInfo(UserInfoDto userInfoDto, String sessionId) {
         if (redisTemplate.opsForValue().get("sessionId:"+sessionId) == null) {
             throw new InvalidSessionException("해당하는 세션 정보가 없습니다.");
         }
@@ -166,7 +166,7 @@ public class UserService {
         redisTemplate.opsForValue().set("logout:"+token,email,accessExpired,TimeUnit.MILLISECONDS);
     }
 
-    public TokenDto refreshToken(String requestToken) throws RefreshTokenException {
+    public TokenDto refreshToken(String requestToken) {
         RefreshToken refreshToken = refreshTokenRepository.findByValue(requestToken).orElseThrow(() ->
                 new RefreshTokenException("토큰 정보 없음"));
 
@@ -221,7 +221,7 @@ public class UserService {
         return basicEntityService.getUserDto(user);
     }
 
-    public UserDto updateUserProfile(String email, UserProfileUpdateDto updateDto, MultipartFile userImage) throws IOException {
+    public UserDto updateUserProfile(String email, UserProfileUpdateDto updateDto, MultipartFile userImage) {
         User user = basicEntityService.getUserByEmail(email);
         UserImage savedImage = userImageRepository.findByUser(user).get();
 
@@ -241,7 +241,12 @@ public class UserService {
         if (userImage != null ) {
             if (!savedImage.getName().equals(PROFILE_DEFAULT_IMAGE))
                 deleteImage(savedImage.getName());
-            UserImage newImage = ioService.saveImage(userImage);
+            UserImage newImage = null;
+            try {
+                newImage = ioService.saveImage(userImage);
+            } catch (IOException e) {
+                throw new IllegalStateException(e);
+            }
             savedImage.setName(newImage.getName());
             savedImage.setOriginName(newImage.getOriginName());
             savedImage.setPath(newImage.getPath());
