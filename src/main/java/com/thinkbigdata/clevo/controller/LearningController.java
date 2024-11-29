@@ -13,19 +13,27 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.ExecutionException;
+
 @RestController
 @RequiredArgsConstructor
 public class LearningController {
     private final LearningService learningService;
 
     @PostMapping("/learning/sentence/score")
-    public ResponseEntity<LearningLogDto> getRandomSentenceResult(@RequestBody @Valid SentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException, PronounceEvaluationException {
+    public ResponseEntity<LearningLogDto> getRandomSentenceResult(@RequestBody @Valid SentenceDto sentence, Authentication authentication) {
         LearningLogDto result = learningService.getRandomSentenceResult(authentication.getName(), sentence);
         return ResponseEntity.ok(result);
     }
 
+    @PostMapping("/learning/sentence/scoreV2")
+    public ResponseEntity<LearningLogDto> getRandomSentenceResultV2(@RequestBody @Valid SentenceDto sentence, Authentication authentication) {
+        LearningLogDto result = learningService.getRandomSentenceResultV2(authentication.getName(), sentence);
+        return ResponseEntity.ok(result);
+    }
+
     @PostMapping("/learning/user-sentence/score")
-    public ResponseEntity<LearningLogDto> getUserSentenceResult(@RequestBody @Valid UserSentenceDto sentence, Authentication authentication) throws JsonProcessingException, InsufficientUserInfoException, PronounceEvaluationException {
+    public ResponseEntity<LearningLogDto> getUserSentenceResult(@RequestBody @Valid UserSentenceDto sentence, Authentication authentication) {
         LearningLogDto result = learningService.getUserSentenceResult(authentication.getName(), sentence);
         return ResponseEntity.ok(result);
     }

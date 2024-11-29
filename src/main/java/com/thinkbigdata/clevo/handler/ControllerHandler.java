@@ -25,7 +25,7 @@ public class ControllerHandler  {
     public ResponseEntity<?> illegalArgument(IllegalArgumentException e) {
         return ResponseEntity.status(400).body(toMap(400, e.getMessage()));
     }
-
+    
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<?> entityNotfound(EntityNotFoundException e) {
         return ResponseEntity.status(404).body(toMap(404, e.getMessage()));
@@ -80,6 +80,16 @@ public class ControllerHandler  {
 
     @ExceptionHandler(PronounceEvaluationException.class)
     public ResponseEntity<?> pronounceFail(PronounceEvaluationException e) {
+        return ResponseEntity.status(500).body(toMap(500, e.getMessage()));
+    }
+
+    @ExceptionHandler(AsyncException.class)
+    public ResponseEntity<?> asyncFail(AsyncException e) {
+        return ResponseEntity.status(500).body(toMap(500, e.getMessage()));
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<?> illegalState(IllegalStateException e) {
         return ResponseEntity.status(500).body(toMap(500, e.getMessage()));
     }
 
