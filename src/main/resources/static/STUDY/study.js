@@ -5,44 +5,45 @@ document.addEventListener("DOMContentLoaded", async () => {
   const sentenceList = document.getElementById("sentence-list");
   const generateBtn = document.getElementById("generate-btn");
 
-async function getUserData() {
-    const userNameElement = document.getElementById("user_id");
+  async function getUserData() {
+      const userNameElement = document.getElementById("user_id");
+      const accessToken = localStorage.getItem("accessToken");
+      try {
+        const response = await fetch("/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        if (!response.ok) throw new Error("Failed to fetch user data");
+        const userData = await response.json();
+        userNameElement.textContent = userData.nickname;
+        return userData;
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+  }
 
+  // 본 소프트웨어는 ETRI의 ETRI Open API와 OpenAI의 ChatGPT API를 활용하여 데이터를 제공합니다.
+  // Copyright © 2024 OpenAI & ETRI. All rights reserved.
+  async function generateSentences(params) {
     const accessToken = localStorage.getItem("accessToken");
-    try {
-      const response = await fetch("/user", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-      if (!response.ok) throw new Error("Failed to fetch user data");
-      const userData = await response.json();
-      userNameElement.textContent = userData.nickname;
 
-      return userData;
+    try {
+      const response = await fetch("https://53qa9adz8h.execute-api.ap-northeast-2.amazonaws.com/sengen", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
+        body: JSON.stringify(params),
+      });
+      if (!response.ok) throw new Error("Failed to generate sentences");
+      return await response.json();
     } catch (error) {
-      console.error("Error fetching user data:", error);
+      console.error("Error generating sentences:", error);
     }
   }
-    // 본 소프트웨어는 ETRI의 ETRI Open API와 OpenAI의 ChatGPT API를 활용하여 데이터를 제공합니다.
-    // Copyright © 2024 OpenAI & ETRI. All rights reserved.
-    async function generateSentences(params) {
-      try {
-        const response = await fetch("https://09fu7eqtjd.execute-api.us-east-1.amazonaws.com/joon/generate", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(params),
-        });
-        if (!response.ok) throw new Error("Failed to generate sentences");
-        return await response.json();
-      } catch (error) {
-        console.error("Error generating sentences:", error);
-      }
-      }
-
 
   async function generateRandomSentences() {
     sentenceList.innerHTML = "";

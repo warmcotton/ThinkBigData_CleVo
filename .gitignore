@@ -39,3 +39,5 @@ env.yml
 
 *.env
 Dockerfile
+*.7b
+*.sql
