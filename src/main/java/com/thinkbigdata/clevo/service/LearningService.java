@@ -128,28 +128,10 @@ public class LearningService {
             st = optst.get();
         }
 
-        CompletableFuture<Void> tasks = CompletableFuture.allOf(resultFuture, fluencyFuture);
-        CompletableFuture<Rf<Result, Double>> complete = tasks.thenApply((res) -> {
-            try {
-                Result result = resultFuture.get();
-                Double fluency = fluencyFuture.get();
-                return new Rf<>(result, fluency);
-            } catch (Exception e) {
-                throw new AsyncException(e.getMessage(),e.getCause());
-            }
-        }).exceptionally(ex -> {
-            throw new AsyncException(ex.getMessage(), ex.getCause()); // roll back
-        });
+        CompletableFuture.allOf(resultFuture, fluencyFuture).join();
 
-        Result res = null;
-        Double fcy = null;
-
-        try {
-            res = complete.get().result;
-            fcy = complete.get().fluency;
-        } catch (Exception e) {
-            throw new AsyncException(e.getMessage(),e.getCause());
-        }
+        Result res = resultFuture.join();
+        Double fcy = fluencyFuture.join();
 
         double accuracy = res.getScore2();
         String vulnerable = res.getVulnerable();
